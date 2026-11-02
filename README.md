@@ -86,6 +86,10 @@ Use server timestamps for message creation and conversation updates. Unsubscribe
 
 Firestore rules must match the schema: require auth; allow conversation/message access only for participants; require `senderId === request.auth.uid` on create; validate fields and text length. Do not deploy open rules (`allow read, write: if true`). UI checks are not authorization.
 
+## Design system
+
+Canonical tokens and component contracts live in [`docs/convo.design-system.json`](docs/convo.design-system.json). Foundation color, type, spacing, radius, and motion are inherited from [`docs/studynt.design-system.json`](docs/studynt.design-system.json). CSS maps to `src/styles/tokens.css` and `src/styles/components.css`.
+
 ## Docs
 
 Course handout: [`docs/React_Firebase_Chat_App - Project 1.pdf`](docs/React_Firebase_Chat_App%20-%20Project%201.pdf)

@@ -1,0 +1,701 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "Convo UI",
+  "version": "0.1.0",
+  "description": "A mobile-first design system for clear, calm, real-time student messaging. Foundation tokens inherited from Studynt UI; product language, components, and patterns adapted for Convo.",
+  "extends": "studynt.design-system.json",
+  "platforms": ["web"],
+  "appearance": {
+    "themes": ["light"],
+    "policy": "Light-only for 0.x. Semantic color roles may be rebound in a later major version if dark mode ships."
+  },
+  "principles": [
+    {
+      "name": "Clarity first",
+      "description": "Reduce cognitive load and present one clear primary action at a time."
+    },
+    {
+      "name": "Conversation is visible",
+      "description": "Make who is talking, what is new, and whether a message landed easy to scan without noise."
+    },
+    {
+      "name": "Messages feel human",
+      "description": "Keep copy and chrome warm and direct—helpful, never robotic or alarming."
+    },
+    {
+      "name": "Mobile is the foundation",
+      "description": "Design for focused, thumb-friendly use on small screens before enhancing larger layouts."
+    },
+    {
+      "name": "Vibrant, not overwhelming",
+      "description": "Use electric blue for intent and sent messages, with restrained supporting accents and quiet surfaces."
+    }
+  ],
+  "tokens": {
+    "color": {
+      "brand": {
+        "primary": {
+          "$type": "color",
+          "$value": "#1769FF",
+          "$description": "Primary actions, sent bubbles, active controls, focus, and brand moments."
+        },
+        "hover": {
+          "$type": "color",
+          "$value": "#0755DE",
+          "$description": "Hover state for primary brand actions on pointer devices."
+        },
+        "pressed": {
+          "$type": "color",
+          "$value": "#0646B8",
+          "$description": "Pressed/active state for primary brand actions; distinct from hover."
+        },
+        "subtle": {
+          "$type": "color",
+          "$value": "#EAF2FF",
+          "$description": "Selected backgrounds, quiet brand surfaces, and focus support."
+        }
+      },
+      "text": {
+        "onPrimary": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "Text and icons on brand primary fills."
+        }
+      },
+      "neutral": {
+        "ink": {
+          "$type": "color",
+          "$value": "#17151F",
+          "$description": "Primary text and high-contrast dark surfaces."
+        },
+        "inkSoft": {
+          "$type": "color",
+          "$value": "#5F5B68",
+          "$description": "Secondary text."
+        },
+        "inkMuted": {
+          "$type": "color",
+          "$value": "#8A8692",
+          "$description": "Hints, captions, timestamps, and tertiary information."
+        },
+        "surface": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "Primary canvas, cards, and received message surface."
+        },
+        "cloud": {
+          "$type": "color",
+          "$value": "#F8F7FA",
+          "$description": "App background, input fill, and secondary control background."
+        },
+        "line": {
+          "$type": "color",
+          "$value": "#E6E3E9",
+          "$description": "Borders and separators."
+        },
+        "disabled": {
+          "$type": "color",
+          "$value": "#EDEAF0",
+          "$description": "Disabled control fill."
+        },
+        "disabledText": {
+          "$type": "color",
+          "$value": "#A8A4B0",
+          "$description": "Disabled control label and icon color; remains readable."
+        }
+      },
+      "accent": {
+        "mint": {
+          "$type": "color",
+          "$value": "#8EE2CF",
+          "$description": "Online presence and soft positive accent."
+        },
+        "mintStrong": {
+          "$type": "color",
+          "$value": "#176653",
+          "$description": "Success text, delivered/read confirmation, high-contrast positive states."
+        },
+        "mintSubtle": {
+          "$type": "color",
+          "$value": "#E8F8F4",
+          "$description": "Positive feedback background."
+        },
+        "sun": {
+          "$type": "color",
+          "$value": "#FFD66B",
+          "$description": "Unread attention accent when a dedicated unread chrome exists."
+        },
+        "sunSubtle": {
+          "$type": "color",
+          "$value": "#FFF7DC",
+          "$description": "Quiet unread and attention background."
+        }
+      },
+      "feedback": {
+        "danger": {
+          "$type": "color",
+          "$value": "#C23F4F",
+          "$description": "Errors and destructive emphasis."
+        },
+        "dangerSubtle": {
+          "$type": "color",
+          "$value": "#FFF0F2",
+          "$description": "Error background."
+        }
+      },
+      "focus": {
+        "ring": {
+          "$type": "color",
+          "$value": "#1769FF",
+          "$description": "Visible focus ring color for interactive controls."
+        }
+      }
+    },
+    "typography": {
+      "fontFamily": {
+        "sans": {
+          "$type": "fontFamily",
+          "$value": "Plus Jakarta Sans, sans-serif"
+        }
+      },
+      "fontWeight": {
+        "regular": { "$type": "fontWeight", "$value": 400 },
+        "medium": { "$type": "fontWeight", "$value": 500 },
+        "semibold": { "$type": "fontWeight", "$value": 600 },
+        "bold": { "$type": "fontWeight", "$value": 700 },
+        "extraBold": { "$type": "fontWeight", "$value": 800 }
+      },
+      "fontSize": {
+        "caption": { "$type": "dimension", "$value": "0.75rem" },
+        "label": { "$type": "dimension", "$value": "0.75rem" },
+        "bodySmall": { "$type": "dimension", "$value": "0.875rem" },
+        "body": { "$type": "dimension", "$value": "1rem" },
+        "titleSmall": { "$type": "dimension", "$value": "1.25rem" },
+        "title": { "$type": "dimension", "$value": "2rem" },
+        "display": { "$type": "dimension", "$value": "3.5rem" }
+      },
+      "lineHeight": {
+        "tight": { "$type": "number", "$value": 1.15 },
+        "heading": { "$type": "number", "$value": 1.3 },
+        "body": { "$type": "number", "$value": 1.6 },
+        "relaxed": { "$type": "number", "$value": 1.75 }
+      },
+      "letterSpacing": {
+        "display": { "$type": "dimension", "$value": "-0.05em" },
+        "heading": { "$type": "dimension", "$value": "-0.03em" },
+        "normal": { "$type": "dimension", "$value": "0em" }
+      },
+      "styles": {
+        "display": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.display",
+          "fontWeight": "typography.fontWeight.extraBold",
+          "lineHeight": "typography.lineHeight.tight",
+          "letterSpacing": "typography.letterSpacing.display"
+        },
+        "title": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.title",
+          "fontWeight": "typography.fontWeight.bold",
+          "lineHeight": "typography.lineHeight.heading",
+          "letterSpacing": "typography.letterSpacing.heading"
+        },
+        "titleSmall": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.titleSmall",
+          "fontWeight": "typography.fontWeight.semibold",
+          "lineHeight": "typography.lineHeight.heading",
+          "letterSpacing": "typography.letterSpacing.heading"
+        },
+        "body": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.body",
+          "fontWeight": "typography.fontWeight.regular",
+          "lineHeight": "typography.lineHeight.body",
+          "letterSpacing": "typography.letterSpacing.normal"
+        },
+        "bodySmall": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.bodySmall",
+          "fontWeight": "typography.fontWeight.regular",
+          "lineHeight": "typography.lineHeight.body",
+          "letterSpacing": "typography.letterSpacing.normal"
+        },
+        "label": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.label",
+          "fontWeight": "typography.fontWeight.medium",
+          "lineHeight": "typography.lineHeight.heading",
+          "letterSpacing": "typography.letterSpacing.normal"
+        },
+        "caption": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.caption",
+          "fontWeight": "typography.fontWeight.regular",
+          "lineHeight": "typography.lineHeight.body",
+          "letterSpacing": "typography.letterSpacing.normal"
+        }
+      }
+    },
+    "spacing": {
+      "0": { "$type": "dimension", "$value": "0rem" },
+      "1": { "$type": "dimension", "$value": "0.25rem" },
+      "2": { "$type": "dimension", "$value": "0.5rem" },
+      "3": { "$type": "dimension", "$value": "0.75rem" },
+      "4": { "$type": "dimension", "$value": "1rem" },
+      "5": { "$type": "dimension", "$value": "1.25rem" },
+      "6": { "$type": "dimension", "$value": "1.5rem" },
+      "8": { "$type": "dimension", "$value": "2rem" },
+      "10": { "$type": "dimension", "$value": "2.5rem" },
+      "12": { "$type": "dimension", "$value": "3rem" },
+      "16": { "$type": "dimension", "$value": "4rem" },
+      "20": { "$type": "dimension", "$value": "5rem" }
+    },
+    "radius": {
+      "small": { "$type": "dimension", "$value": "0.625rem" },
+      "medium": { "$type": "dimension", "$value": "0.875rem" },
+      "large": { "$type": "dimension", "$value": "1.25rem" },
+      "device": { "$type": "dimension", "$value": "2rem" },
+      "full": { "$type": "dimension", "$value": "9999px" }
+    },
+    "motion": {
+      "duration": {
+        "fast": { "$type": "duration", "$value": "160ms" },
+        "standard": { "$type": "duration", "$value": "220ms" }
+      },
+      "easing": {
+        "standard": { "$type": "cubicBezier", "$value": [0.2, 0, 0, 1] }
+      }
+    },
+    "breakpoint": {
+      "mobile": { "$type": "dimension", "$value": "0px" },
+      "tablet": { "$type": "dimension", "$value": "780px" },
+      "desktop": { "$type": "dimension", "$value": "1050px" }
+    },
+    "size": {
+      "touchTargetMinimum": {
+        "$type": "dimension",
+        "$value": "44px",
+        "$description": "Minimum interactive target size."
+      },
+      "contentMobilePadding": { "$type": "dimension", "$value": "1.25rem" },
+      "buttonHeight": { "$type": "dimension", "$value": "2.65rem" },
+      "inputHeight": { "$type": "dimension", "$value": "3rem" },
+      "focusRingWidth": {
+        "$type": "dimension",
+        "$value": "2px",
+        "$description": "Visible focus ring thickness."
+      },
+      "focusRingOffset": {
+        "$type": "dimension",
+        "$value": "2px",
+        "$description": "Gap between control edge and focus ring."
+      },
+      "navHeight": { "$type": "dimension", "$value": "3.5rem" },
+      "authMaxWidth": { "$type": "dimension", "$value": "22.5rem" },
+      "messageMaxWidth": { "$type": "dimension", "$value": "75%" },
+      "sidebarWidth": { "$type": "dimension", "$value": "20rem" },
+      "avatarSmall": { "$type": "dimension", "$value": "2rem" },
+      "avatarMedium": { "$type": "dimension", "$value": "2.5rem" }
+    }
+  },
+  "components": {
+    "Button": {
+      "description": "Communicates the next available action.",
+      "variants": ["primary", "secondary", "ghost", "icon"],
+      "states": ["default", "hover", "pressed", "focus", "disabled", "loading"],
+      "anatomy": [
+        "container",
+        "label",
+        "optional leading icon",
+        "optional trailing icon",
+        "loading indicator"
+      ],
+      "tokenBindings": {
+        "primary.default.background": "color.brand.primary",
+        "primary.default.text": "color.text.onPrimary",
+        "primary.hover.background": "color.brand.hover",
+        "primary.hover.text": "color.text.onPrimary",
+        "primary.pressed.background": "color.brand.pressed",
+        "primary.pressed.text": "color.text.onPrimary",
+        "primary.disabled.background": "color.neutral.disabled",
+        "primary.disabled.text": "color.neutral.disabledText",
+        "primary.loading.background": "color.brand.primary",
+        "primary.loading.text": "color.text.onPrimary",
+        "primary.loading.indicator": "color.text.onPrimary",
+        "secondary.default.background": "color.neutral.cloud",
+        "secondary.default.text": "color.neutral.ink",
+        "secondary.default.border": "color.neutral.line",
+        "secondary.hover.background": "color.neutral.surface",
+        "secondary.hover.border": "color.neutral.inkMuted",
+        "secondary.pressed.background": "color.neutral.line",
+        "secondary.disabled.background": "color.neutral.disabled",
+        "secondary.disabled.text": "color.neutral.disabledText",
+        "secondary.loading.background": "color.neutral.cloud",
+        "secondary.loading.indicator": "color.neutral.ink",
+        "ghost.default.background": "color.neutral.surface",
+        "ghost.default.text": "color.brand.primary",
+        "ghost.hover.background": "color.brand.subtle",
+        "ghost.pressed.background": "color.brand.subtle",
+        "ghost.pressed.text": "color.brand.pressed",
+        "ghost.disabled.text": "color.neutral.disabledText",
+        "ghost.loading.indicator": "color.brand.primary",
+        "icon.default.text": "color.neutral.ink",
+        "icon.hover.background": "color.neutral.cloud",
+        "icon.pressed.background": "color.neutral.line",
+        "icon.disabled.text": "color.neutral.disabledText",
+        "icon.loading.indicator": "color.neutral.ink",
+        "focus.ring.color": "color.focus.ring",
+        "focus.ring.width": "size.focusRingWidth",
+        "focus.ring.offset": "size.focusRingOffset",
+        "height": "size.buttonHeight",
+        "radius": "radius.small",
+        "label.style": "typography.styles.label",
+        "padding.inline": "spacing.4",
+        "motion": "motion.duration.fast"
+      },
+      "accessibility": [
+        "Icon-only buttons require an accessible name.",
+        "Loading keeps dimensions stable, sets aria-busy true, is not pressable, and remains in tab order.",
+        "Disabled buttons remain readable and are not focusable as activators.",
+        "Visible focus ring uses shared focus tokens on every interactive variant."
+      ],
+      "rules": [
+        "Use electric blue for the primary variant.",
+        "Use only one primary button in a focused mobile region.",
+        "Use sentence case and begin labels with a verb.",
+        "Loading replaces the label with a progress indicator without changing control size."
+      ]
+    },
+    "Badge": {
+      "description": "Communicates compact metadata such as unread count, online, or delivered.",
+      "variants": ["brand", "success", "attention", "neutral"],
+      "states": ["default"],
+      "anatomy": ["container", "label", "optional icon"],
+      "tokenBindings": {
+        "brand.background": "color.brand.subtle",
+        "brand.text": "color.brand.primary",
+        "success.background": "color.accent.mintSubtle",
+        "success.text": "color.accent.mintStrong",
+        "attention.background": "color.accent.sunSubtle",
+        "attention.text": "color.neutral.ink",
+        "neutral.background": "color.neutral.cloud",
+        "neutral.text": "color.neutral.inkSoft",
+        "radius": "radius.full",
+        "label.style": "typography.styles.caption",
+        "padding.inline": "spacing.2",
+        "padding.block": "spacing.1"
+      },
+      "accessibility": [
+        "Do not rely on color alone; keep a short text label when status is shown as a badge.",
+        "Badges are not focusable controls unless they become links, which requires a different component."
+      ],
+      "rules": [
+        "Do not use badges as primary actions.",
+        "Keep labels short and avoid wrapping when possible.",
+        "Do not rely on color alone to communicate status."
+      ]
+    },
+    "TextInput": {
+      "description": "Collects short-form user input for auth and search.",
+      "states": ["default", "hover", "focus", "valid", "invalid", "disabled"],
+      "anatomy": [
+        "visible label",
+        "field",
+        "optional leading icon",
+        "optional trailing affordance",
+        "hint or validation text"
+      ],
+      "tokenBindings": {
+        "label.style": "typography.styles.label",
+        "label.color": "color.neutral.ink",
+        "field.background": "color.neutral.cloud",
+        "field.border.default": "color.neutral.line",
+        "field.border.hover": "color.neutral.inkMuted",
+        "field.border.focus": "color.brand.primary",
+        "field.border.valid": "color.accent.mintStrong",
+        "field.border.invalid": "color.feedback.danger",
+        "field.text": "color.neutral.ink",
+        "field.placeholder": "color.neutral.inkMuted",
+        "hint.color": "color.neutral.inkMuted",
+        "hint.style": "typography.styles.caption",
+        "valid.text": "color.accent.mintStrong",
+        "invalid.text": "color.feedback.danger",
+        "disabled.background": "color.neutral.disabled",
+        "disabled.text": "color.neutral.disabledText",
+        "focus.ring.color": "color.focus.ring",
+        "focus.ring.width": "size.focusRingWidth",
+        "focus.ring.offset": "size.focusRingOffset",
+        "height": "size.inputHeight",
+        "radius": "radius.medium",
+        "padding.inline": "spacing.4"
+      },
+      "accessibility": [
+        "Keep labels visible above the field; placeholders are examples only.",
+        "Associate hint and validation text with the input via accessible descriptions.",
+        "Announce validation changes without moving focus unexpectedly."
+      ],
+      "rules": [
+        "Keep labels visible above the field.",
+        "Use hint text for useful guidance, not repeated labels.",
+        "Present validation close to the field."
+      ]
+    },
+    "Navigation": {
+      "description": "Provides orientation within Convo—brand, identity, and sign-out.",
+      "states": ["default", "hover", "selected", "focus"],
+      "anatomy": [
+        "app bar or nav container",
+        "brand mark",
+        "identity label",
+        "optional actions"
+      ],
+      "tokenBindings": {
+        "container.background": "color.neutral.surface",
+        "container.border": "color.neutral.line",
+        "brand.style": "typography.styles.titleSmall",
+        "brand.color": "color.neutral.ink",
+        "item.default.text": "color.neutral.inkSoft",
+        "item.hover.text": "color.neutral.ink",
+        "item.hover.background": "color.neutral.cloud",
+        "focus.ring.color": "color.focus.ring",
+        "focus.ring.width": "size.focusRingWidth",
+        "focus.ring.offset": "size.focusRingOffset",
+        "height": "size.navHeight",
+        "padding": "spacing.4"
+      },
+      "accessibility": [
+        "Preserve a clear brand mark in the app bar.",
+        "Identity text should truncate with title attribute when overflowed.",
+        "Sign-out remains a real button with a verb label."
+      ],
+      "rules": [
+        "Keep the brand as the strongest left-side signal.",
+        "Prefer secondary or ghost actions in the app bar; reserve primary for compose/send."
+      ]
+    },
+    "MessageBubble": {
+      "description": "Displays a single chat message with alignment by sender.",
+      "variants": ["sent", "received"],
+      "states": ["default"],
+      "anatomy": ["container", "body text", "optional timestamp", "optional status"],
+      "tokenBindings": {
+        "sent.background": "color.brand.primary",
+        "sent.text": "color.text.onPrimary",
+        "sent.meta": "color.brand.subtle",
+        "received.background": "color.neutral.cloud",
+        "received.text": "color.neutral.ink",
+        "received.meta": "color.neutral.inkMuted",
+        "radius": "radius.large",
+        "body.style": "typography.styles.bodySmall",
+        "meta.style": "typography.styles.caption",
+        "maxWidth": "size.messageMaxWidth",
+        "padding.inline": "spacing.3",
+        "padding.block": "spacing.2"
+      },
+      "accessibility": [
+        "Expose sender and time in accessible text, not color alone.",
+        "Do not nest interactive controls inside a bubble body."
+      ],
+      "rules": [
+        "Sent messages use electric blue; received messages use quiet cloud.",
+        "Keep bubble corners softer on the trailing edge toward the peer.",
+        "Timestamps stay caption-scale and never compete with body text."
+      ]
+    },
+    "Avatar": {
+      "description": "Compact identity mark for a user in lists and headers.",
+      "variants": ["small", "medium"],
+      "states": ["default"],
+      "anatomy": ["circle", "initials or image", "optional presence dot"],
+      "tokenBindings": {
+        "background": "color.brand.subtle",
+        "text": "color.brand.primary",
+        "presence.online": "color.accent.mintStrong",
+        "small.size": "size.avatarSmall",
+        "medium.size": "size.avatarMedium",
+        "radius": "radius.full",
+        "label.style": "typography.styles.label"
+      },
+      "accessibility": [
+        "Provide an accessible name from the display name.",
+        "Presence must also be available as text somewhere nearby when critical."
+      ],
+      "rules": [
+        "Use initials from the display name when no photo exists.",
+        "Keep presence dots decorative unless paired with text."
+      ]
+    },
+    "ChatComposer": {
+      "description": "Message composition row: field plus send action.",
+      "states": ["default", "focus", "disabled", "sending"],
+      "anatomy": ["container", "text field", "send button"],
+      "tokenBindings": {
+        "container.background": "color.neutral.surface",
+        "container.border": "color.neutral.line",
+        "field.background": "color.neutral.cloud",
+        "field.text": "color.neutral.ink",
+        "field.placeholder": "color.neutral.inkMuted",
+        "send.background": "color.brand.primary",
+        "send.text": "color.text.onPrimary",
+        "radius": "radius.medium",
+        "padding": "spacing.3"
+      },
+      "accessibility": [
+        "Send button needs an accessible name even when icon-only.",
+        "Disable send when the field is empty or a send is in flight."
+      ],
+      "rules": [
+        "One primary send control per composer.",
+        "Keep the composer sticky to the bottom on mobile."
+      ]
+    },
+    "UserListItem": {
+      "description": "Directory or conversation row for selecting a peer.",
+      "states": ["default", "hover", "selected", "focus"],
+      "anatomy": ["avatar", "display name", "optional preview", "optional unread badge"],
+      "tokenBindings": {
+        "default.background": "color.neutral.surface",
+        "hover.background": "color.neutral.cloud",
+        "selected.background": "color.brand.subtle",
+        "name.style": "typography.styles.bodySmall",
+        "name.color": "color.neutral.ink",
+        "preview.color": "color.neutral.inkMuted",
+        "preview.style": "typography.styles.caption",
+        "radius": "radius.medium",
+        "padding": "spacing.3"
+      },
+      "accessibility": [
+        "Entire row is one activatable control with the peer's name.",
+        "Unread state must include a text or badge label, not color alone."
+      ],
+      "rules": [
+        "Selected row uses brand subtle, not a heavy card shadow.",
+        "Preview text truncates to one line."
+      ]
+    }
+  },
+  "patterns": {
+    "messageClarity": {
+      "description": "How Convo presents chat content so scanning stays easy.",
+      "rules": [
+        "Align sent messages to the end edge and received messages to the start edge.",
+        "Prefer short timestamps near the bubble over dense metadata rows.",
+        "Empty states invite a next action: search a user or start a chat.",
+        "Color is never the sole status channel for delivery or unread."
+      ]
+    },
+    "progressiveDisclosure": {
+      "description": "Show only the information and controls needed for the user's current decision—auth, peer pick, or active chat."
+    }
+  },
+  "accessibility": {
+    "target": "WCAG 2.2 AA",
+    "requirements": [
+      "Maintain at least 4.5:1 contrast for normal text and 3:1 for large text and UI boundaries.",
+      "Use visible focus indicators on every interactive control.",
+      "Use a minimum 44 by 44 pixel touch target.",
+      "Do not communicate status using color alone.",
+      "Provide accessible names for icon-only controls.",
+      "Respect reduced-motion preferences.",
+      "Keep reading order and keyboard order aligned.",
+      "Use semantic headings, labels, groups, and status announcements."
+    ]
+  },
+  "content": {
+    "voice": ["clear", "direct", "human", "calm", "non-judgmental"],
+    "rules": [
+      "Use short sentences and familiar words.",
+      "Describe actions with verbs.",
+      "Explain auth and send failures without blame.",
+      "Prefer 'Try again' over 'You failed'.",
+      "Use sentence case for interface labels."
+    ]
+  },
+  "implementation": {
+    "source": {
+      "canonical": "docs/convo.design-system.json",
+      "foundation": "docs/studynt.design-system.json",
+      "cssTokens": "src/styles/tokens.css",
+      "componentsCss": "src/styles/components.css"
+    },
+    "cssTokenMapping": {
+      "--color-brand-primary": "{color.brand.primary}",
+      "--color-brand-hover": "{color.brand.hover}",
+      "--color-brand-pressed": "{color.brand.pressed}",
+      "--color-brand-subtle": "{color.brand.subtle}",
+      "--color-text-on-primary": "{color.text.onPrimary}",
+      "--color-neutral-ink": "{color.neutral.ink}",
+      "--color-neutral-ink-soft": "{color.neutral.inkSoft}",
+      "--color-neutral-ink-muted": "{color.neutral.inkMuted}",
+      "--color-neutral-surface": "{color.neutral.surface}",
+      "--color-neutral-cloud": "{color.neutral.cloud}",
+      "--color-neutral-line": "{color.neutral.line}",
+      "--color-neutral-disabled": "{color.neutral.disabled}",
+      "--color-neutral-disabled-text": "{color.neutral.disabledText}",
+      "--color-accent-mint": "{color.accent.mint}",
+      "--color-accent-mint-strong": "{color.accent.mintStrong}",
+      "--color-accent-mint-subtle": "{color.accent.mintSubtle}",
+      "--color-accent-sun": "{color.accent.sun}",
+      "--color-accent-sun-subtle": "{color.accent.sunSubtle}",
+      "--color-feedback-danger": "{color.feedback.danger}",
+      "--color-feedback-danger-subtle": "{color.feedback.dangerSubtle}",
+      "--color-focus-ring": "{color.focus.ring}",
+      "--font-sans": "{typography.fontFamily.sans}",
+      "--font-size-caption": "{typography.fontSize.caption}",
+      "--font-size-label": "{typography.fontSize.label}",
+      "--font-size-body-small": "{typography.fontSize.bodySmall}",
+      "--font-size-body": "{typography.fontSize.body}",
+      "--font-size-title-small": "{typography.fontSize.titleSmall}",
+      "--font-size-title": "{typography.fontSize.title}",
+      "--font-size-display": "{typography.fontSize.display}",
+      "--font-weight-regular": "{typography.fontWeight.regular}",
+      "--font-weight-medium": "{typography.fontWeight.medium}",
+      "--font-weight-semibold": "{typography.fontWeight.semibold}",
+      "--font-weight-bold": "{typography.fontWeight.bold}",
+      "--font-weight-extra-bold": "{typography.fontWeight.extraBold}",
+      "--line-height-tight": "{typography.lineHeight.tight}",
+      "--line-height-heading": "{typography.lineHeight.heading}",
+      "--line-height-body": "{typography.lineHeight.body}",
+      "--line-height-relaxed": "{typography.lineHeight.relaxed}",
+      "--letter-spacing-display": "{typography.letterSpacing.display}",
+      "--letter-spacing-heading": "{typography.letterSpacing.heading}",
+      "--letter-spacing-normal": "{typography.letterSpacing.normal}",
+      "--spacing-1": "{spacing.1}",
+      "--spacing-2": "{spacing.2}",
+      "--spacing-3": "{spacing.3}",
+      "--spacing-4": "{spacing.4}",
+      "--spacing-5": "{spacing.5}",
+      "--spacing-6": "{spacing.6}",
+      "--spacing-8": "{spacing.8}",
+      "--radius-small": "{radius.small}",
+      "--radius-medium": "{radius.medium}",
+      "--radius-large": "{radius.large}",
+      "--radius-device": "{radius.device}",
+      "--radius-full": "{radius.full}",
+      "--size-touch-target-minimum": "{size.touchTargetMinimum}",
+      "--size-button-height": "{size.buttonHeight}",
+      "--size-input-height": "{size.inputHeight}",
+      "--size-focus-ring-width": "{size.focusRingWidth}",
+      "--size-focus-ring-offset": "{size.focusRingOffset}",
+      "--size-nav-height": "{size.navHeight}",
+      "--size-auth-max": "{size.authMaxWidth}",
+      "--size-message-max": "{size.messageMaxWidth}",
+      "--size-sidebar-width": "{size.sidebarWidth}",
+      "--size-avatar-small": "{size.avatarSmall}",
+      "--size-avatar-medium": "{size.avatarMedium}",
+      "--size-content-mobile-padding": "{size.contentMobilePadding}",
+      "--motion-duration-fast": "{motion.duration.fast}",
+      "--motion-duration-standard": "{motion.duration.standard}",
+      "--motion-easing-standard": "cubic-bezier(0.2, 0, 0, 1)",
+      "--breakpoint-tablet": "{breakpoint.tablet}",
+      "--breakpoint-desktop": "{breakpoint.desktop}"
+    },
+    "notes": [
+      "Studynt foundation tokens (color, type, spacing, radius, motion, breakpoints) are preserved.",
+      "Convo adds chat-specific components and layout sizes; education progress/XP patterns are omitted.",
+      "JSON is the canonical source of truth. CSS custom properties mirror semantic token paths.",
+      "Borders are preferred over shadows in 0.1; shadow tokens are intentionally omitted."
+    ]
+  }
+}

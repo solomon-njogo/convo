@@ -1,0 +1,723 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "Studynt UI",
+  "version": "0.1.0",
+  "description": "A mobile-first design system for clear, motivating, AI-powered Studynt education experiences.",
+  "platforms": ["web", "ios", "android"],
+  "appearance": {
+    "themes": ["light"],
+    "policy": "Light-only for 0.x. Semantic color roles may be rebound in a later major version if dark mode ships."
+  },
+  "principles": [
+    {
+      "name": "Clarity first",
+      "description": "Reduce cognitive load and present one clear primary action at a time."
+    },
+    {
+      "name": "Progress is visible",
+      "description": "Turn effort into countable momentum learners can see and understand, without shame or loss-aversion pressure."
+    },
+    {
+      "name": "AI feels human",
+      "description": "Make AI helpful, transparent, and supportive rather than mysterious or authoritative."
+    },
+    {
+      "name": "Mobile is the foundation",
+      "description": "Design for focused, thumb-friendly use on small screens before enhancing larger layouts."
+    },
+    {
+      "name": "Vibrant, not overwhelming",
+      "description": "Use electric blue for intent and progress, with restrained supporting accents and quiet surfaces."
+    }
+  ],
+  "tokens": {
+    "color": {
+      "brand": {
+        "primary": {
+          "$type": "color",
+          "$value": "#1769FF",
+          "$description": "Primary actions, active controls, progress, focus, and brand moments."
+        },
+        "hover": {
+          "$type": "color",
+          "$value": "#0755DE",
+          "$description": "Hover state for primary brand actions on pointer devices."
+        },
+        "pressed": {
+          "$type": "color",
+          "$value": "#0646B8",
+          "$description": "Pressed/active state for primary brand actions; distinct from hover."
+        },
+        "subtle": {
+          "$type": "color",
+          "$value": "#EAF2FF",
+          "$description": "Selected backgrounds, quiet brand surfaces, and focus support."
+        }
+      },
+      "text": {
+        "onPrimary": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "Text and icons on brand primary fills."
+        }
+      },
+      "neutral": {
+        "ink": {
+          "$type": "color",
+          "$value": "#17151F",
+          "$description": "Primary text and high-contrast dark surfaces."
+        },
+        "inkSoft": {
+          "$type": "color",
+          "$value": "#5F5B68",
+          "$description": "Secondary text."
+        },
+        "inkMuted": {
+          "$type": "color",
+          "$value": "#8A8692",
+          "$description": "Hints, captions, and tertiary information."
+        },
+        "surface": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "Primary canvas and card surface."
+        },
+        "cloud": {
+          "$type": "color",
+          "$value": "#F8F7FA",
+          "$description": "Quiet section, input, and secondary control background."
+        },
+        "line": {
+          "$type": "color",
+          "$value": "#E6E3E9",
+          "$description": "Borders and separators."
+        },
+        "disabled": {
+          "$type": "color",
+          "$value": "#EDEAF0",
+          "$description": "Disabled control fill."
+        },
+        "disabledText": {
+          "$type": "color",
+          "$value": "#A8A4B0",
+          "$description": "Disabled control label and icon color; remains readable."
+        }
+      },
+      "accent": {
+        "mint": {
+          "$type": "color",
+          "$value": "#8EE2CF",
+          "$description": "Positive supporting accent and illustration color."
+        },
+        "mintStrong": {
+          "$type": "color",
+          "$value": "#176653",
+          "$description": "Success text, icons, and high-contrast positive states."
+        },
+        "mintSubtle": {
+          "$type": "color",
+          "$value": "#E8F8F4",
+          "$description": "Positive feedback background."
+        },
+        "sun": {
+          "$type": "color",
+          "$value": "#FFD66B",
+          "$description": "Achievement, streak, reward, and XP accent when reward chrome exists."
+        },
+        "sunSubtle": {
+          "$type": "color",
+          "$value": "#FFF7DC",
+          "$description": "Quiet reward and achievement background."
+        }
+      },
+      "feedback": {
+        "danger": {
+          "$type": "color",
+          "$value": "#C23F4F",
+          "$description": "Errors and destructive emphasis."
+        },
+        "dangerSubtle": {
+          "$type": "color",
+          "$value": "#FFF0F2",
+          "$description": "Error background."
+        }
+      },
+      "focus": {
+        "ring": {
+          "$type": "color",
+          "$value": "#1769FF",
+          "$description": "Visible focus ring color for interactive controls."
+        }
+      }
+    },
+    "typography": {
+      "fontFamily": {
+        "sans": {
+          "$type": "fontFamily",
+          "$value": "Plus Jakarta Sans, sans-serif"
+        }
+      },
+      "fontWeight": {
+        "regular": { "$type": "fontWeight", "$value": 400 },
+        "medium": { "$type": "fontWeight", "$value": 500 },
+        "semibold": { "$type": "fontWeight", "$value": 600 },
+        "bold": { "$type": "fontWeight", "$value": 700 },
+        "extraBold": { "$type": "fontWeight", "$value": 800 }
+      },
+      "fontSize": {
+        "caption": { "$type": "dimension", "$value": "0.75rem" },
+        "label": { "$type": "dimension", "$value": "0.75rem" },
+        "bodySmall": { "$type": "dimension", "$value": "0.875rem" },
+        "body": { "$type": "dimension", "$value": "1rem" },
+        "titleSmall": { "$type": "dimension", "$value": "1.25rem" },
+        "title": { "$type": "dimension", "$value": "2rem" },
+        "display": { "$type": "dimension", "$value": "3.5rem" }
+      },
+      "lineHeight": {
+        "tight": { "$type": "number", "$value": 1.15 },
+        "heading": { "$type": "number", "$value": 1.3 },
+        "body": { "$type": "number", "$value": 1.6 },
+        "relaxed": { "$type": "number", "$value": 1.75 }
+      },
+      "letterSpacing": {
+        "display": { "$type": "dimension", "$value": "-0.05em" },
+        "heading": { "$type": "dimension", "$value": "-0.03em" },
+        "normal": { "$type": "dimension", "$value": "0em" }
+      },
+      "styles": {
+        "display": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.display",
+          "fontWeight": "typography.fontWeight.extraBold",
+          "lineHeight": "typography.lineHeight.tight",
+          "letterSpacing": "typography.letterSpacing.display"
+        },
+        "title": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.title",
+          "fontWeight": "typography.fontWeight.bold",
+          "lineHeight": "typography.lineHeight.heading",
+          "letterSpacing": "typography.letterSpacing.heading"
+        },
+        "titleSmall": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.titleSmall",
+          "fontWeight": "typography.fontWeight.semibold",
+          "lineHeight": "typography.lineHeight.heading",
+          "letterSpacing": "typography.letterSpacing.heading"
+        },
+        "body": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.body",
+          "fontWeight": "typography.fontWeight.regular",
+          "lineHeight": "typography.lineHeight.body",
+          "letterSpacing": "typography.letterSpacing.normal"
+        },
+        "bodySmall": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.bodySmall",
+          "fontWeight": "typography.fontWeight.regular",
+          "lineHeight": "typography.lineHeight.body",
+          "letterSpacing": "typography.letterSpacing.normal"
+        },
+        "label": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.label",
+          "fontWeight": "typography.fontWeight.medium",
+          "lineHeight": "typography.lineHeight.heading",
+          "letterSpacing": "typography.letterSpacing.normal"
+        },
+        "caption": {
+          "fontFamily": "typography.fontFamily.sans",
+          "fontSize": "typography.fontSize.caption",
+          "fontWeight": "typography.fontWeight.regular",
+          "lineHeight": "typography.lineHeight.body",
+          "letterSpacing": "typography.letterSpacing.normal"
+        }
+      }
+    },
+    "spacing": {
+      "0": { "$type": "dimension", "$value": "0rem" },
+      "1": { "$type": "dimension", "$value": "0.25rem" },
+      "2": { "$type": "dimension", "$value": "0.5rem" },
+      "3": { "$type": "dimension", "$value": "0.75rem" },
+      "4": { "$type": "dimension", "$value": "1rem" },
+      "5": { "$type": "dimension", "$value": "1.25rem" },
+      "6": { "$type": "dimension", "$value": "1.5rem" },
+      "8": { "$type": "dimension", "$value": "2rem" },
+      "10": { "$type": "dimension", "$value": "2.5rem" },
+      "12": { "$type": "dimension", "$value": "3rem" },
+      "16": { "$type": "dimension", "$value": "4rem" },
+      "20": { "$type": "dimension", "$value": "5rem" }
+    },
+    "radius": {
+      "small": { "$type": "dimension", "$value": "0.625rem" },
+      "medium": { "$type": "dimension", "$value": "0.875rem" },
+      "large": { "$type": "dimension", "$value": "1.25rem" },
+      "device": { "$type": "dimension", "$value": "2rem" },
+      "full": { "$type": "dimension", "$value": "9999px" }
+    },
+    "motion": {
+      "duration": {
+        "fast": { "$type": "duration", "$value": "160ms" },
+        "standard": { "$type": "duration", "$value": "220ms" }
+      },
+      "easing": {
+        "standard": { "$type": "cubicBezier", "$value": [0.2, 0, 0, 1] }
+      }
+    },
+    "breakpoint": {
+      "mobile": { "$type": "dimension", "$value": "0px" },
+      "tablet": { "$type": "dimension", "$value": "780px" },
+      "desktop": { "$type": "dimension", "$value": "1050px" }
+    },
+    "size": {
+      "touchTargetMinimum": {
+        "$type": "dimension",
+        "$value": "44px",
+        "$description": "Minimum interactive target size."
+      },
+      "contentMobilePadding": { "$type": "dimension", "$value": "1.25rem" },
+      "buttonHeight": { "$type": "dimension", "$value": "2.65rem" },
+      "inputHeight": { "$type": "dimension", "$value": "3rem" },
+      "focusRingWidth": {
+        "$type": "dimension",
+        "$value": "2px",
+        "$description": "Visible focus ring thickness."
+      },
+      "focusRingOffset": {
+        "$type": "dimension",
+        "$value": "2px",
+        "$description": "Gap between control edge and focus ring."
+      }
+    }
+  },
+  "components": {
+    "Button": {
+      "description": "Communicates the next available action.",
+      "variants": ["primary", "secondary", "ghost", "icon"],
+      "states": ["default", "hover", "pressed", "focus", "disabled", "loading"],
+      "anatomy": [
+        "container",
+        "label",
+        "optional leading icon",
+        "optional trailing icon",
+        "loading indicator"
+      ],
+      "tokenBindings": {
+        "primary.default.background": "color.brand.primary",
+        "primary.default.text": "color.text.onPrimary",
+        "primary.hover.background": "color.brand.hover",
+        "primary.hover.text": "color.text.onPrimary",
+        "primary.pressed.background": "color.brand.pressed",
+        "primary.pressed.text": "color.text.onPrimary",
+        "primary.disabled.background": "color.neutral.disabled",
+        "primary.disabled.text": "color.neutral.disabledText",
+        "primary.loading.background": "color.brand.primary",
+        "primary.loading.text": "color.text.onPrimary",
+        "primary.loading.indicator": "color.text.onPrimary",
+        "secondary.default.background": "color.neutral.cloud",
+        "secondary.default.text": "color.neutral.ink",
+        "secondary.default.border": "color.neutral.line",
+        "secondary.hover.background": "color.neutral.surface",
+        "secondary.hover.border": "color.neutral.inkMuted",
+        "secondary.pressed.background": "color.neutral.line",
+        "secondary.disabled.background": "color.neutral.disabled",
+        "secondary.disabled.text": "color.neutral.disabledText",
+        "secondary.loading.background": "color.neutral.cloud",
+        "secondary.loading.indicator": "color.neutral.ink",
+        "ghost.default.background": "color.neutral.surface",
+        "ghost.default.text": "color.brand.primary",
+        "ghost.hover.background": "color.brand.subtle",
+        "ghost.pressed.background": "color.brand.subtle",
+        "ghost.pressed.text": "color.brand.pressed",
+        "ghost.disabled.text": "color.neutral.disabledText",
+        "ghost.loading.indicator": "color.brand.primary",
+        "icon.default.text": "color.neutral.ink",
+        "icon.hover.background": "color.neutral.cloud",
+        "icon.pressed.background": "color.neutral.line",
+        "icon.disabled.text": "color.neutral.disabledText",
+        "icon.loading.indicator": "color.neutral.ink",
+        "focus.ring.color": "color.focus.ring",
+        "focus.ring.width": "size.focusRingWidth",
+        "focus.ring.offset": "size.focusRingOffset",
+        "height": "size.buttonHeight",
+        "radius": "radius.small",
+        "label.style": "typography.styles.label",
+        "padding.inline": "spacing.4",
+        "motion": "motion.duration.fast"
+      },
+      "accessibility": [
+        "Icon-only buttons require an accessible name.",
+        "Loading keeps dimensions stable, sets aria-busy true, is not pressable, and remains in tab order.",
+        "Disabled buttons remain readable and are not focusable as activators.",
+        "Visible focus ring uses shared focus tokens on every interactive variant."
+      ],
+      "platforms": {
+        "web": {
+          "touchTarget": "At least size.touchTargetMinimum; enlarge hit area if visual height is smaller.",
+          "hover": "Apply hover bindings only for fine pointer / hover-capable input.",
+          "dynamicType": "Label uses rem-based typography styles; do not clip on text zoom.",
+          "controlMapping": "native button element or role=button with keyboard activation"
+        },
+        "ios": {
+          "touchTarget": "Minimum 44pt hit target via content or hitSlop.",
+          "hover": "No hover; use pressed/highlight for touch feedback.",
+          "dynamicType": "Support Dynamic Type up at least two steps without truncation of the verb label.",
+          "controlMapping": "UIButton / SwiftUI Button"
+        },
+        "android": {
+          "touchTarget": "Minimum 48dp recommended touch target; never below 44dp equivalent.",
+          "hover": "No hover; use pressed ripple or equivalent.",
+          "dynamicType": "Respect fontScale; keep verb label readable.",
+          "controlMapping": "Material Button / Compose Button"
+        }
+      },
+      "rules": [
+        "Use electric blue for the primary variant.",
+        "Use only one primary button in a focused mobile region.",
+        "Use sentence case and begin labels with a verb.",
+        "Loading replaces the label with a progress indicator without changing control size."
+      ]
+    },
+    "Badge": {
+      "description": "Communicates compact metadata, status, level, or reward.",
+      "variants": ["brand", "success", "reward", "neutral"],
+      "states": ["default"],
+      "anatomy": ["container", "label", "optional icon"],
+      "tokenBindings": {
+        "brand.background": "color.brand.subtle",
+        "brand.text": "color.brand.primary",
+        "success.background": "color.accent.mintSubtle",
+        "success.text": "color.accent.mintStrong",
+        "reward.background": "color.accent.sunSubtle",
+        "reward.text": "color.neutral.ink",
+        "neutral.background": "color.neutral.cloud",
+        "neutral.text": "color.neutral.inkSoft",
+        "radius": "radius.full",
+        "label.style": "typography.styles.caption",
+        "padding.inline": "spacing.2",
+        "padding.block": "spacing.1"
+      },
+      "accessibility": [
+        "Do not rely on color alone; keep a short text label.",
+        "Badges are not focusable controls unless they become links, which requires a different component."
+      ],
+      "platforms": {
+        "web": {
+          "touchTarget": "Not interactive; no touch target required.",
+          "hover": "No hover affordance.",
+          "dynamicType": "Caption style must remain legible at text zoom.",
+          "controlMapping": "span or status text; not a button"
+        },
+        "ios": {
+          "touchTarget": "Not interactive.",
+          "hover": "N/A",
+          "dynamicType": "Scale with Dynamic Type; allow wrapping only if metadata remains scannable.",
+          "controlMapping": "UILabel / SwiftUI Text capsule"
+        },
+        "android": {
+          "touchTarget": "Not interactive.",
+          "hover": "N/A",
+          "dynamicType": "Respect fontScale.",
+          "controlMapping": "Text / Chip-style non-interactive view"
+        }
+      },
+      "rules": [
+        "Do not use badges as primary actions.",
+        "Keep labels short and avoid wrapping when possible.",
+        "Do not rely on color alone to communicate status."
+      ]
+    },
+    "TextInput": {
+      "description": "Collects short-form learner input.",
+      "states": ["default", "hover", "focus", "valid", "invalid", "disabled"],
+      "anatomy": [
+        "visible label",
+        "field",
+        "optional leading icon",
+        "optional trailing affordance",
+        "hint or validation text"
+      ],
+      "tokenBindings": {
+        "label.style": "typography.styles.label",
+        "label.color": "color.neutral.ink",
+        "field.background": "color.neutral.cloud",
+        "field.border.default": "color.neutral.line",
+        "field.border.hover": "color.neutral.inkMuted",
+        "field.border.focus": "color.brand.primary",
+        "field.border.valid": "color.accent.mintStrong",
+        "field.border.invalid": "color.feedback.danger",
+        "field.text": "color.neutral.ink",
+        "field.placeholder": "color.neutral.inkMuted",
+        "hint.color": "color.neutral.inkMuted",
+        "hint.style": "typography.styles.caption",
+        "valid.text": "color.accent.mintStrong",
+        "invalid.text": "color.feedback.danger",
+        "disabled.background": "color.neutral.disabled",
+        "disabled.text": "color.neutral.disabledText",
+        "focus.ring.color": "color.focus.ring",
+        "focus.ring.width": "size.focusRingWidth",
+        "focus.ring.offset": "size.focusRingOffset",
+        "height": "size.inputHeight",
+        "radius": "radius.medium",
+        "padding.inline": "spacing.4"
+      },
+      "accessibility": [
+        "Keep labels visible above the field; placeholders are examples only.",
+        "Associate hint and validation text with the input via accessible descriptions.",
+        "Announce validation changes without moving focus unexpectedly."
+      ],
+      "platforms": {
+        "web": {
+          "touchTarget": "Field height at least size.inputHeight and touchTargetMinimum.",
+          "hover": "Optional border emphasis on hover-capable pointers only.",
+          "dynamicType": "Do not shrink type to fit; allow field to grow vertically if needed.",
+          "controlMapping": "label + input (or textarea) with linked descriptions"
+        },
+        "ios": {
+          "touchTarget": "Minimum 44pt control height.",
+          "hover": "N/A",
+          "dynamicType": "UITextField/TextField must scale with Dynamic Type.",
+          "controlMapping": "UITextField / SwiftUI TextField"
+        },
+        "android": {
+          "touchTarget": "Minimum 48dp recommended.",
+          "hover": "N/A",
+          "dynamicType": "Respect fontScale; keep label persistent.",
+          "controlMapping": "TextInputLayout + EditText / Compose TextField"
+        }
+      },
+      "rules": [
+        "Keep labels visible above the field.",
+        "Use hint text for useful guidance, not repeated labels.",
+        "Present validation close to the field."
+      ]
+    },
+    "Tabs": {
+      "description": "Switches between peer content views without changing context.",
+      "states": ["default", "hover", "selected", "focus", "disabled"],
+      "anatomy": ["tab list", "tab", "selected indicator", "tab panel"],
+      "tokenBindings": {
+        "tab.label.style": "typography.styles.label",
+        "tab.default.text": "color.neutral.inkSoft",
+        "tab.default.background": "color.neutral.surface",
+        "tab.selected.text": "color.brand.primary",
+        "tab.selected.indicator": "color.brand.primary",
+        "tab.selected.background": "color.neutral.surface",
+        "tab.hover.text": "color.neutral.ink",
+        "tab.disabled.text": "color.neutral.disabledText",
+        "tab.disabled.background": "color.neutral.surface",
+        "focus.ring.color": "color.focus.ring",
+        "focus.ring.width": "size.focusRingWidth",
+        "focus.ring.offset": "size.focusRingOffset",
+        "padding.inline": "spacing.3",
+        "padding.block": "spacing.2"
+      },
+      "accessibility": [
+        "Use correct tab semantics and keyboard behavior (arrows within the list).",
+        "Selected state must not rely on color alone; keep text plus indicator.",
+        "Do not use tabs for sequential required workflows."
+      ],
+      "platforms": {
+        "web": {
+          "touchTarget": "Each tab at least size.touchTargetMinimum tall.",
+          "hover": "Hover text emphasis on fine pointers only.",
+          "dynamicType": "Allow horizontal scroll of the tab list before truncating labels.",
+          "controlMapping": "tablist / tab / tabpanel pattern"
+        },
+        "ios": {
+          "touchTarget": "Minimum 44pt per tab.",
+          "hover": "N/A",
+          "dynamicType": "Prefer abbreviated labels before shrinking below caption size.",
+          "controlMapping": "UISegmentedControl or custom tab bar with accessibility traits"
+        },
+        "android": {
+          "touchTarget": "Minimum 48dp recommended.",
+          "hover": "N/A",
+          "dynamicType": "Scrollable TabLayout when labels exceed width.",
+          "controlMapping": "TabLayout / Compose TabRow"
+        }
+      },
+      "rules": [
+        "Use electric blue for the selected tab.",
+        "Use two to four concise labels.",
+        "Do not use tabs for sequential steps."
+      ]
+    },
+    "Navigation": {
+      "description": "Provides orientation within documentation and learning experiences.",
+      "states": ["default", "hover", "selected", "focus"],
+      "anatomy": [
+        "app bar or nav container",
+        "destination items",
+        "active indicator",
+        "optional menu trigger on mobile"
+      ],
+      "tokenBindings": {
+        "item.default.text": "color.neutral.inkSoft",
+        "item.default.background": "color.neutral.surface",
+        "item.selected.text": "color.brand.primary",
+        "item.selected.background": "color.brand.subtle",
+        "item.hover.text": "color.neutral.ink",
+        "item.hover.background": "color.neutral.cloud",
+        "title.style": "typography.styles.titleSmall",
+        "item.label.style": "typography.styles.label",
+        "trigger.default.text": "color.neutral.ink",
+        "trigger.hover.background": "color.neutral.cloud",
+        "focus.ring.color": "color.focus.ring",
+        "focus.ring.width": "size.focusRingWidth",
+        "focus.ring.offset": "size.focusRingOffset",
+        "padding": "spacing.4"
+      },
+      "accessibility": [
+        "Preserve a clear page or course title in the app bar.",
+        "Expose expanded/collapsed state of mobile navigation to assistive tech.",
+        "Active destination uses text plus color, not color alone."
+      ],
+      "platforms": {
+        "web": {
+          "touchTarget": "Destinations and menu trigger meet size.touchTargetMinimum.",
+          "hover": "Hover styles on fine pointers only.",
+          "dynamicType": "Mobile nav remains usable when type scales up.",
+          "controlMapping": "nav landmark with links or buttons; dialog/disclosure for mobile menu"
+        },
+        "ios": {
+          "touchTarget": "Minimum 44pt for bar items and menu controls.",
+          "hover": "N/A",
+          "dynamicType": "Large titles and bar items must not collide at accessibility sizes.",
+          "controlMapping": "UINavigationBar / TabView or sidebar depending on IA"
+        },
+        "android": {
+          "touchTarget": "Minimum 48dp recommended for nav items.",
+          "hover": "N/A",
+          "dynamicType": "Support fontScale in top app bar and drawers.",
+          "controlMapping": "TopAppBar, NavigationBar, or NavigationDrawer"
+        }
+      },
+      "rules": [
+        "Use electric blue for the active destination.",
+        "Keep mobile navigation hidden until requested.",
+        "Preserve a clear page or course title in the app bar."
+      ]
+    }
+  },
+  "patterns": {
+    "progressFeedback": {
+      "description": "How Studynt shows momentum without shame, urgency theater, or blocking gamification.",
+      "rules": [
+        "Prefer countable progress such as '4 of 10' or '80%' over vague urgency.",
+        "Do not use shame or loss-aversion copy such as 'Don't break your streak' or 'You failed'.",
+        "Streaks and XP are optional and must never block core learning actions.",
+        "Color is never the sole status channel.",
+        "Until a dedicated reward component exists, express progress typographically and structurally; sun tokens are reserved for future reward chrome only."
+      ]
+    },
+    "progressiveDisclosure": {
+      "description": "Show only the information and controls needed for the learner's current decision."
+    }
+  },
+  "accessibility": {
+    "target": "WCAG 2.2 AA",
+    "requirements": [
+      "Maintain at least 4.5:1 contrast for normal text and 3:1 for large text and UI boundaries.",
+      "Use visible focus indicators on every interactive control.",
+      "Use a minimum 44 by 44 pixel touch target.",
+      "Do not communicate status using color alone.",
+      "Provide accessible names for icon-only controls.",
+      "Respect reduced-motion preferences.",
+      "Keep reading order and keyboard order aligned.",
+      "Use semantic headings, labels, groups, and status announcements."
+    ]
+  },
+  "content": {
+    "voice": ["clear", "encouraging", "direct", "human", "non-judgmental"],
+    "rules": [
+      "Use short sentences and familiar words.",
+      "Describe actions with verbs.",
+      "Explain mistakes without blame.",
+      "Prefer 'Try again' over 'You failed'.",
+      "Avoid presenting AI output as unquestionable fact.",
+      "Use sentence case for interface labels."
+    ]
+  },
+  "implementation": {
+    "source": {
+      "canonical": "src/design_system/studynt.design-system.json",
+      "documentation": "src/design_system/README.md",
+      "docsBuilder": "src/design_system/build-docs.mjs",
+      "contractValidator": "src/design_system/validate-contract.mjs",
+      "exceptionsLog": "src/design_system/EXCEPTIONS.md",
+      "changelog": "src/design_system/CHANGELOG.md"
+    },
+    "cssTokenMapping": {
+      "--color-brand-primary": "{color.brand.primary}",
+      "--color-brand-hover": "{color.brand.hover}",
+      "--color-brand-pressed": "{color.brand.pressed}",
+      "--color-brand-subtle": "{color.brand.subtle}",
+      "--color-text-on-primary": "{color.text.onPrimary}",
+      "--color-neutral-ink": "{color.neutral.ink}",
+      "--color-neutral-ink-soft": "{color.neutral.inkSoft}",
+      "--color-neutral-ink-muted": "{color.neutral.inkMuted}",
+      "--color-neutral-surface": "{color.neutral.surface}",
+      "--color-neutral-cloud": "{color.neutral.cloud}",
+      "--color-neutral-line": "{color.neutral.line}",
+      "--color-neutral-disabled": "{color.neutral.disabled}",
+      "--color-neutral-disabled-text": "{color.neutral.disabledText}",
+      "--color-accent-mint": "{color.accent.mint}",
+      "--color-accent-mint-strong": "{color.accent.mintStrong}",
+      "--color-accent-mint-subtle": "{color.accent.mintSubtle}",
+      "--color-accent-sun": "{color.accent.sun}",
+      "--color-accent-sun-subtle": "{color.accent.sunSubtle}",
+      "--color-feedback-danger": "{color.feedback.danger}",
+      "--color-feedback-danger-subtle": "{color.feedback.dangerSubtle}",
+      "--color-focus-ring": "{color.focus.ring}",
+      "--font-sans": "{typography.fontFamily.sans}",
+      "--font-size-caption": "{typography.fontSize.caption}",
+      "--font-size-label": "{typography.fontSize.label}",
+      "--font-size-body-small": "{typography.fontSize.bodySmall}",
+      "--font-size-body": "{typography.fontSize.body}",
+      "--font-size-title-small": "{typography.fontSize.titleSmall}",
+      "--font-size-title": "{typography.fontSize.title}",
+      "--font-size-display": "{typography.fontSize.display}",
+      "--font-weight-regular": "{typography.fontWeight.regular}",
+      "--font-weight-medium": "{typography.fontWeight.medium}",
+      "--font-weight-semibold": "{typography.fontWeight.semibold}",
+      "--font-weight-bold": "{typography.fontWeight.bold}",
+      "--font-weight-extra-bold": "{typography.fontWeight.extraBold}",
+      "--line-height-tight": "{typography.lineHeight.tight}",
+      "--line-height-heading": "{typography.lineHeight.heading}",
+      "--line-height-body": "{typography.lineHeight.body}",
+      "--line-height-relaxed": "{typography.lineHeight.relaxed}",
+      "--letter-spacing-display": "{typography.letterSpacing.display}",
+      "--letter-spacing-heading": "{typography.letterSpacing.heading}",
+      "--letter-spacing-normal": "{typography.letterSpacing.normal}",
+      "--spacing-1": "{spacing.1}",
+      "--spacing-2": "{spacing.2}",
+      "--spacing-3": "{spacing.3}",
+      "--spacing-4": "{spacing.4}",
+      "--spacing-5": "{spacing.5}",
+      "--spacing-6": "{spacing.6}",
+      "--spacing-8": "{spacing.8}",
+      "--radius-small": "{radius.small}",
+      "--radius-medium": "{radius.medium}",
+      "--radius-large": "{radius.large}",
+      "--radius-full": "{radius.full}",
+      "--size-touch-target-minimum": "{size.touchTargetMinimum}",
+      "--size-button-height": "{size.buttonHeight}",
+      "--size-input-height": "{size.inputHeight}",
+      "--size-focus-ring-width": "{size.focusRingWidth}",
+      "--size-focus-ring-offset": "{size.focusRingOffset}",
+      "--motion-duration-fast": "{motion.duration.fast}",
+      "--motion-duration-standard": "{motion.duration.standard}",
+      "--breakpoint-tablet": "{breakpoint.tablet}",
+      "--breakpoint-desktop": "{breakpoint.desktop}"
+    },
+    "notes": [
+      "JSON is the canonical source of truth. README inventories are generated.",
+      "CSS custom properties use semantic names that match the JSON token paths.",
+      "Borders are preferred over shadows in 0.1; shadow tokens are intentionally omitted.",
+      "Audience priority when guidance conflicts: implementation, then agent tooling, then human prose."
+    ]
+  }
+}
