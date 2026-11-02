@@ -1,6 +1,11 @@
 import { useMemo, useState } from 'react'
 import Navbar from './components/Navbar'
 import { AuthContext } from './context/AuthContext'
+import {
+  DEMO_USERS_KEY,
+  notifyDemoUsersChanged,
+} from './hooks/usePeers'
+import Chat from './pages/Chat'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import './App.css'
@@ -9,7 +14,6 @@ import './App.css'
  * Temporary demo wiring so Person A UI can run before Firebase auth plumbing lands.
  * Auth/routing owner: replace this Provider value with real AuthProvider + route gate.
  */
-const DEMO_USERS_KEY = 'convo-demo-users'
 
 function readDemoUsers() {
   try {
@@ -21,6 +25,20 @@ function readDemoUsers() {
 
 function writeDemoUsers(users) {
   localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(users))
+  notifyDemoUsersChanged()
+}
+
+function ensureUid(record, emailKey) {
+  if (record.uid) return record
+  return { ...record, uid: `demo_${emailKey}` }
+}
+
+function toSessionUser(record) {
+  return {
+    uid: record.uid,
+    displayName: record.displayName,
+    email: record.email,
+  }
 }
 
 function App() {
@@ -32,14 +50,20 @@ function App() {
       user,
       async login({ email, password }) {
         await delay(450)
+        const key = email.toLowerCase()
         const users = readDemoUsers()
-        const record = users[email.toLowerCase()]
+        const record = users[key]
         if (!record || record.password !== password) {
           const error = new Error('Incorrect email or password')
           error.code = 'auth/invalid-credential'
           throw error
         }
-        setUser({ displayName: record.displayName, email: record.email })
+        const withUid = ensureUid(record, key)
+        if (!record.uid) {
+          users[key] = withUid
+          writeDemoUsers(users)
+        }
+        setUser(toSessionUser(withUid))
       },
       async register({ displayName, email, password }) {
         await delay(450)
@@ -50,9 +74,13 @@ function App() {
           error.code = 'auth/email-already-in-use'
           throw error
         }
-        users[key] = { displayName, email, password }
+        const uid =
+          typeof crypto !== 'undefined' && crypto.randomUUID
+            ? crypto.randomUUID()
+            : `demo_${key}_${Date.now()}`
+        users[key] = { uid, displayName, email, password, photoURL: null }
         writeDemoUsers(users)
-        setUser({ displayName, email })
+        setUser(toSessionUser(users[key]))
       },
       async signOut() {
         await delay(200)
@@ -68,9 +96,8 @@ function App() {
       {user ? (
         <>
           <Navbar />
-          <main className="app-signed-in">
-            <h1>You&apos;re signed in</h1>
-            <p>Chat UI arrives next. Use Sign out in the navbar to return to Login.</p>
+          <main className="app-chat">
+            <Chat />
           </main>
         </>
       ) : authView === 'register' ? (

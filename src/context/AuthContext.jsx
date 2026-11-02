@@ -2,7 +2,8 @@ import { createContext, useContext } from 'react'
 
 /**
  * Seam for the auth/routing owner.
- * Person A UI consumes: login, register, signOut, user { displayName, email }.
+ * Person A UI consumes: login, register, signOut,
+ * user { uid, displayName, email } (uid matches users/{userId}).
  */
 export const AuthContext = createContext(null)
 
