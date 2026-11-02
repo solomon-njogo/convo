@@ -36,6 +36,22 @@ _Avoid_: User query, find friends, global search
 A chat between the signed-in person and exactly one Selected peer. It exists only after the first successful message send — selecting a Peer alone does not create it.
 _Avoid_: Thread, room, channel, chat session (as the stored entity)
 
+**Message**:
+One text unit inside a Conversation, shown in the chat pane as a sent or received bubble with a creation time.
+_Avoid_: Post, comment, chat item
+
+**Chat pane**:
+The main panel for the Selected peer — Message list plus Chat composer. On narrow viewports, Back clears the Selected peer and returns to the Peer directory.
+_Avoid_: Conversation list, inbox, active chat window (as a product name)
+
+**Back**:
+On narrow viewports with a Selected peer: the toolbar control that clears the Selected peer and returns to the Peer directory. With no Selected peer, that toolbar slot is Menu (opens/closes the Peer directory drawer). Back is not shown in the ChatWindow header.
+_Avoid_: Close chat, leave conversation, conversation list
+
+**Chat composer**:
+The chat-pane field and send control used to draft and send a Message to the Selected peer.
+_Avoid_: Message box, textbox (as the product name)
+
 **Register**:
 Creating Firebase Auth credentials plus a User profile. The Register form collects Display name, email, password, and a confirm-password field (Client validation only; confirm-password is not stored).
 _Avoid_: Sign up, create account (prefer Register in UI copy)

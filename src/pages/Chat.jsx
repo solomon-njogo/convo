@@ -1,9 +1,15 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { ArrowLeft, Menu, X } from 'lucide-react'
+import ChatWindow from '../components/ChatWindow'
 import UserList from '../components/UserList'
 import UserSearch from '../components/UserSearch'
 import { useAuth } from '../context/AuthContext'
+import { useMessages } from '../hooks/useMessages'
 import { usePeers } from '../hooks/usePeers'
+import {
+  findExistingConversationId,
+  sendMessageToPeer,
+} from '../services/chatService'
 import { preparePeerDirectory } from '../utils/peers'
 import './Chat.css'
 
@@ -19,18 +25,26 @@ export default function Chat() {
   const { peers: profiles, status, error, retry } = usePeers()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPeerId, setSelectedPeerId] = useState(null)
+  const [conversationId, setConversationId] = useState(null)
+  const [stickToLatestToken, setStickToLatestToken] = useState(0)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isWide, setIsWide] = useState(readIsWide)
 
   const toggleRef = useRef(null)
   const drawerRef = useRef(null)
+  const selectedPeerIdRef = useRef(selectedPeerId)
   const titleId = useId()
+
+  useEffect(() => {
+    selectedPeerIdRef.current = selectedPeerId
+  }, [selectedPeerId])
 
   if (
     selectedPeerId !== null &&
     !profiles.some((profile) => profile.id === selectedPeerId)
   ) {
     setSelectedPeerId(null)
+    setConversationId(null)
   }
 
   const selectedPeer = useMemo(() => {
@@ -42,6 +56,9 @@ export default function Chat() {
     () => preparePeerDirectory(profiles, user?.uid, searchQuery),
     [profiles, user?.uid, searchQuery],
   )
+
+  const { messages, loading, error: messagesError, retry: retryMessages } =
+    useMessages(conversationId)
 
   useEffect(() => {
     const media = window.matchMedia(TABLET_MQ)
@@ -77,11 +94,37 @@ export default function Chat() {
   }, [isWide, sidebarOpen])
 
   function handleSelectPeer(peer) {
+    selectedPeerIdRef.current = peer.id
     setSelectedPeerId(peer.id)
+    setConversationId(findExistingConversationId(user?.uid, peer.id))
+    setStickToLatestToken((token) => token + 1)
     if (!isWide) {
       setSidebarOpen(false)
       queueMicrotask(() => toggleRef.current?.focus())
     }
+  }
+
+  function handleBack() {
+    selectedPeerIdRef.current = null
+    setSelectedPeerId(null)
+    setConversationId(null)
+    setSidebarOpen(false)
+    queueMicrotask(() => toggleRef.current?.focus())
+  }
+
+  async function handleSend(text) {
+    if (!user?.uid || !selectedPeer) {
+      throw new Error('Select a student before sending')
+    }
+    const peerIdAtSend = selectedPeer.id
+    const nextId = await sendMessageToPeer({
+      currentUserId: user.uid,
+      peerId: peerIdAtSend,
+      text,
+    })
+    if (selectedPeerIdRef.current !== peerIdAtSend) return
+    setConversationId(nextId)
+    setStickToLatestToken((token) => token + 1)
   }
 
   const showDrawer = !isWide && sidebarOpen
@@ -89,6 +132,7 @@ export default function Chat() {
     selectedPeer && visiblePeers.some((peer) => peer.id === selectedPeer.id)
       ? selectedPeer.id
       : null
+  const showBack = !isWide && Boolean(selectedPeer)
 
   return (
     <div className="chat-layout">
@@ -98,13 +142,29 @@ export default function Chat() {
             ref={toggleRef}
             type="button"
             className="btn btn--icon chat-toolbar__toggle"
-            aria-expanded={sidebarOpen}
-            aria-controls="peer-directory"
-            onClick={() => setSidebarOpen((open) => !open)}
+            aria-expanded={showBack ? undefined : sidebarOpen}
+            aria-controls={showBack ? undefined : 'peer-directory'}
+            onClick={() => {
+              if (showBack) {
+                handleBack()
+                return
+              }
+              setSidebarOpen((open) => !open)
+            }}
           >
-            {sidebarOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+            {showBack ? (
+              <ArrowLeft size={20} aria-hidden="true" />
+            ) : sidebarOpen ? (
+              <X size={20} aria-hidden="true" />
+            ) : (
+              <Menu size={20} aria-hidden="true" />
+            )}
             <span className="visually-hidden">
-              {sidebarOpen ? 'Close peers' : 'Open peers'}
+              {showBack
+                ? 'Back to students'
+                : sidebarOpen
+                  ? 'Close peers'
+                  : 'Open peers'}
             </span>
           </button>
           <p className="chat-toolbar__label">
@@ -157,13 +217,16 @@ export default function Chat() {
 
       <section className="chat-pane" aria-live="polite">
         {selectedPeer ? (
-          <div className="chat-pane__active">
-            <h2 className="chat-pane__peer-name">{selectedPeer.displayName}</h2>
-            <p className="chat-pane__hint">
-              Messages arrive next. Say hello when messaging is ready — the Conversation
-              starts on your first send.
-            </p>
-          </div>
+          <ChatWindow
+            peer={selectedPeer}
+            messages={messages}
+            loading={Boolean(conversationId) && loading}
+            error={messagesError}
+            onRetry={retryMessages}
+            currentUserId={user?.uid}
+            onSend={handleSend}
+            stickToLatestToken={stickToLatestToken}
+          />
         ) : (
           <div className="chat-pane__empty">
             <p>Select a student to start chatting</p>

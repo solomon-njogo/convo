@@ -1,4 +1,4 @@
-import { displayInitials } from '../utils/peers'
+import PeerAvatar from './PeerAvatar'
 
 export default function UserList({
   peers,
@@ -61,21 +61,5 @@ export default function UserList({
         )
       })}
     </ul>
-  )
-}
-
-function PeerAvatar({ peer }) {
-  if (peer.photoURL) {
-    return (
-      <span className="avatar avatar--medium" aria-hidden="true">
-        <img src={peer.photoURL} alt="" className="avatar__image" />
-      </span>
-    )
-  }
-
-  return (
-    <span className="avatar avatar--medium" aria-hidden="true">
-      {displayInitials(peer.displayName)}
-    </span>
   )
 }
