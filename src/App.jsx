@@ -8,12 +8,15 @@ import {
 import Chat from './pages/Chat'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import { ensureDemoStudents } from './utils/demoStudents'
 import './App.css'
 
 /**
  * Temporary demo wiring so Person A UI can run before Firebase auth plumbing lands.
  * Auth/routing owner: replace this Provider value with real AuthProvider + route gate.
  */
+
+ensureDemoStudents()
 
 function readDemoUsers() {
   try {

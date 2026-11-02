@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { mapAuthError } from '../utils/authErrors'
 import { hasErrors, validateLogin } from '../utils/authValidation'
+import { DEMO_STUDENT_PASSWORD } from '../utils/demoStudents'
 import './AuthForm.css'
 
 export default function Login({ onGoToRegister }) {
@@ -131,6 +132,11 @@ export default function Login({ onGoToRegister }) {
           >
             Register
           </button>
+        </p>
+
+        <p className="auth-demo-hint">
+          Demo classmates: <code>alex@studynt.demo</code> (also jordan, sam, maya) —
+          password <code>{DEMO_STUDENT_PASSWORD}</code>
         </p>
       </div>
     </div>
