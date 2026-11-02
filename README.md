@@ -30,8 +30,7 @@ React powers the UI. Firebase Authentication and Cloud Firestore handle identity
 ## Setup
 
 ```bash
-npm install
-npm install firebase
+npm ci
 ```
 
 ### Firebase
@@ -39,16 +38,14 @@ npm install firebase
 1. Create a project in the Firebase Console and register a Web App.
 2. Enable **Authentication → Email/Password**.
 3. Create a **Cloud Firestore** database.
-4. Copy `.env.example` to `.env` and fill in your web config (Vite `VITE_` prefix):
+4. Copy `.env.example` to `.env` and fill in your web config. In PowerShell:
 
-```env
-VITE_FIREBASE_API_KEY=your-api-key
-VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your-project-id
-VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
-VITE_FIREBASE_APP_ID=your-app-id
-```
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+5. Publish the repository's `firestore.rules` to the project before testing
+   Firestore reads or writes.
 
 Do not commit `.env`. Firebase web config is not a security boundary—protect access with Authentication and Security Rules. Never put service-account keys in the frontend.
 
@@ -60,13 +57,29 @@ npm run dev
 
 Other scripts: `npm run build`, `npm run preview`, `npm run lint`.
 
+The Firebase integration expects these exports and shapes:
+
+- `useAuth()` exposes `user`, `currentUser`, `loading`, `error`, `login`,
+  `register`, and `signOut`. `user` is the Firebase Auth user.
+- `registerUser({ email, password, displayName })` creates the Auth account and
+  corresponding `users/{uid}` profile.
+- `loginUser({ email, password })` resolves to a Firebase `UserCredential`.
+- `getAllUsers(currentUserId)` returns user profiles excluding the caller;
+  `subscribeToUsers` is the real-time variant.
+- `getConversationId(uid1, uid2)` uses sorted UIDs joined by `_`;
+  `getOrCreateConversation(uid1, uid2)` resolves to that stable ID.
+- `sendMessage(conversationId, senderId, text)` atomically creates the message
+  and updates the conversation preview and timestamp.
+- `useMessages(conversationId)` returns `{ messages, loading, error }` and
+  releases its Firestore listener when the conversation changes or unmounts.
+
 ## Project structure
 
 ```
 src/
   components/     # Navbar, UserList, UserSearch, ChatWindow, MessageList, MessageInput
   pages/          # Login, Register, Chat
-  context/        # AuthContext
+  context/        # AuthContext, AuthProvider
   hooks/          # useMessages
   services/       # authService, chatService
   firebase/       # config.js
@@ -77,7 +90,7 @@ src/
 | Collection / path | Purpose |
 | --- | --- |
 | `users/{userId}` | Profile: `displayName`, `email`, `photoURL`, `createdAt` |
-| `conversations/{conversationId}` | `participants`, `lastMessage`, `updatedAt` |
+| `conversations/{conversationId}` | `participants`, `createdAt`, `lastMessage`, `updatedAt` |
 | `conversations/{conversationId}/messages/{messageId}` | `senderId`, `text`, `createdAt` |
 
 Use server timestamps for message creation and conversation updates. Unsubscribe from real-time listeners when the conversation changes or a component unmounts.

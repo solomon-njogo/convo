@@ -8,7 +8,7 @@ function signedInLabel(user) {
   return user?.email ?? 'Signed in'
 }
 
-export default function Navbar() {
+export default function Navbar({ onSignedOut }) {
   const { user, signOut } = useAuth()
   const [isSigningOut, setIsSigningOut] = useState(false)
 
@@ -17,6 +17,7 @@ export default function Navbar() {
     setIsSigningOut(true)
     try {
       await signOut()
+      onSignedOut?.()
     } finally {
       setIsSigningOut(false)
     }
