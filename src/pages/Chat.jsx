@@ -27,6 +27,7 @@ export default function Chat() {
   const [selectedPeerId, setSelectedPeerId] = useState(null)
   const [conversationId, setConversationId] = useState(null)
   const [stickToLatestToken, setStickToLatestToken] = useState(0)
+  const [conversationLookupError, setConversationLookupError] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isWide, setIsWide] = useState(readIsWide)
 
@@ -38,14 +39,6 @@ export default function Chat() {
   useEffect(() => {
     selectedPeerIdRef.current = selectedPeerId
   }, [selectedPeerId])
-
-  if (
-    selectedPeerId !== null &&
-    !profiles.some((profile) => profile.id === selectedPeerId)
-  ) {
-    setSelectedPeerId(null)
-    setConversationId(null)
-  }
 
   const selectedPeer = useMemo(() => {
     if (!selectedPeerId) return null
@@ -93,10 +86,27 @@ export default function Chat() {
     }
   }, [isWide, sidebarOpen])
 
+  async function resolveConversation(peerId) {
+    if (!user?.uid) return
+    setConversationLookupError(null)
+    try {
+      const id = await findExistingConversationId(user.uid, peerId)
+      if (selectedPeerIdRef.current === peerId) setConversationId(id)
+    } catch (error) {
+      if (selectedPeerIdRef.current === peerId) {
+        setConversationLookupError(
+          error instanceof Error ? error : new Error('Could not load conversation'),
+        )
+      }
+    }
+  }
+
   function handleSelectPeer(peer) {
     selectedPeerIdRef.current = peer.id
     setSelectedPeerId(peer.id)
-    setConversationId(findExistingConversationId(user?.uid, peer.id))
+    setConversationId(null)
+    setConversationLookupError(null)
+    void resolveConversation(peer.id)
     setStickToLatestToken((token) => token + 1)
     if (!isWide) {
       setSidebarOpen(false)
@@ -108,8 +118,17 @@ export default function Chat() {
     selectedPeerIdRef.current = null
     setSelectedPeerId(null)
     setConversationId(null)
+    setConversationLookupError(null)
     setSidebarOpen(false)
     queueMicrotask(() => toggleRef.current?.focus())
+  }
+
+  function handleRetryMessages() {
+    if (conversationLookupError && selectedPeerId) {
+      void resolveConversation(selectedPeerId)
+      return
+    }
+    retryMessages()
   }
 
   async function handleSend(text) {
@@ -221,8 +240,8 @@ export default function Chat() {
             peer={selectedPeer}
             messages={messages}
             loading={Boolean(conversationId) && loading}
-            error={messagesError}
-            onRetry={retryMessages}
+            error={conversationLookupError ?? messagesError}
+            onRetry={handleRetryMessages}
             currentUserId={user?.uid}
             onSend={handleSend}
             stickToLatestToken={stickToLatestToken}

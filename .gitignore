@@ -16,6 +16,9 @@ dist-ssr
 .env
 .env.*
 !.env.example
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
 
 # Editor directories and files
 .vscode/*

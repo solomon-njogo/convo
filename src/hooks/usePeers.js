@@ -1,72 +1,50 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { subscribeToUsers } from '../services/chatService'
 
-export const DEMO_USERS_KEY = 'convo-demo-users'
-export const DEMO_USERS_CHANGED = 'convo-demo-users-changed'
-
-/**
- * Temporary demo Peer directory source (localStorage).
- * Data owner: replace with Firestore users listener + unsubscribe.
- */
-function readDemoProfiles() {
-  try {
-    const users = JSON.parse(localStorage.getItem(DEMO_USERS_KEY) ?? '{}')
-    return Object.values(users)
-      .filter((record) => record?.uid)
-      .map((record) => ({
-        id: record.uid,
-        displayName: record.displayName,
-        email: record.email,
-        photoURL: record.photoURL ?? null,
-      }))
-  } catch {
-    return []
-  }
-}
-
-export function notifyDemoUsersChanged() {
-  window.dispatchEvent(new Event(DEMO_USERS_CHANGED))
+const EMPTY_RESULT = {
+  uid: null,
+  attempt: -1,
+  peers: [],
+  status: 'loading',
+  error: null,
 }
 
 export function usePeers() {
-  const [peers, setPeers] = useState(() => readDemoProfiles())
-  const [status, setStatus] = useState('ready')
-  const [error, setError] = useState(null)
-
-  const applyProfiles = useCallback((options = {}) => {
-    if (options.showLoading) {
-      setStatus('loading')
-      setError(null)
-    }
-    try {
-      setPeers(readDemoProfiles())
-      setStatus('ready')
-      setError(null)
-    } catch (err) {
-      setPeers([])
-      setError(err instanceof Error ? err : new Error('Could not load peers'))
-      setStatus('error')
-    }
-  }, [])
-
-  const refresh = useCallback(() => applyProfiles(), [applyProfiles])
-  const retry = useCallback(() => applyProfiles({ showLoading: true }), [applyProfiles])
+  const { user } = useAuth()
+  const [attempt, setAttempt] = useState(0)
+  const [result, setResult] = useState(EMPTY_RESULT)
+  const uid = user?.uid ?? null
 
   useEffect(() => {
-    function onStorage(event) {
-      if (event.key === DEMO_USERS_KEY || event.key === null) refresh()
-    }
+    if (!uid) return undefined
 
-    function onLocalChange() {
-      refresh()
-    }
+    return subscribeToUsers(uid, (peers) => {
+      setResult({
+        uid,
+        attempt,
+        peers,
+        status: 'ready',
+        error: null,
+      })
+    }, (error) => {
+      setResult({
+        uid,
+        attempt,
+        peers: [],
+        status: 'error',
+        error,
+      })
+    })
+  }, [uid, attempt])
 
-    window.addEventListener('storage', onStorage)
-    window.addEventListener(DEMO_USERS_CHANGED, onLocalChange)
-    return () => {
-      window.removeEventListener('storage', onStorage)
-      window.removeEventListener(DEMO_USERS_CHANGED, onLocalChange)
-    }
-  }, [refresh])
+  const retry = useCallback(() => setAttempt((value) => value + 1), [])
+  const resultIsCurrent = result.uid === uid && result.attempt === attempt
 
-  return { peers, status, error, retry }
+  return {
+    peers: resultIsCurrent ? result.peers : [],
+    status: resultIsCurrent ? result.status : 'loading',
+    error: resultIsCurrent ? result.error : null,
+    retry,
+  }
 }

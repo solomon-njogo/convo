@@ -1,78 +1,56 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  DEMO_CONVERSATIONS_CHANGED,
-  DEMO_CONVERSATIONS_KEY,
-  listMessages,
-} from '../services/chatService'
+import { useCallback, useEffect, useState } from 'react'
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
+import { db } from '../firebase/config'
 
-/**
- * Temporary demo Message listener (localStorage).
- * Data owner: replace with Firestore onSnapshot ordered by createdAt + unsubscribe.
- *
- * @param {string | null} conversationId
- * @returns {{ messages: Array, loading: boolean, error: string | null, retry: () => void }}
- */
+const EMPTY_RESULT = {
+  conversationId: null,
+  attempt: -1,
+  messages: [],
+  error: null,
+}
+
 export function useMessages(conversationId) {
-  const activeId = conversationId ?? null
-  const [tick, setTick] = useState(0)
-  const [loadError, setLoadError] = useState(null)
-  const [trackedId, setTrackedId] = useState(activeId)
-
-  if (trackedId !== activeId) {
-    setTrackedId(activeId)
-    setLoadError(null)
-  }
-
-  const messages = useMemo(() => {
-    if (!activeId) return []
-    try {
-      void tick
-      return listMessages(activeId)
-    } catch {
-      return []
-    }
-  }, [activeId, tick])
-
-  const retry = useCallback(() => {
-    if (!activeId) return
-    try {
-      listMessages(activeId)
-      setLoadError(null)
-    } catch (err) {
-      setLoadError(err instanceof Error ? err.message : 'Could not load messages')
-    }
-    setTick((value) => value + 1)
-  }, [activeId])
+  const [attempt, setAttempt] = useState(0)
+  const [result, setResult] = useState(EMPTY_RESULT)
 
   useEffect(() => {
-    if (!activeId) return undefined
+    if (!conversationId) return undefined
 
-    function bump() {
-      try {
-        listMessages(activeId)
-        setLoadError(null)
-      } catch (err) {
-        setLoadError(err instanceof Error ? err.message : 'Could not load messages')
-      }
-      setTick((value) => value + 1)
-    }
+    const messagesQuery = query(
+      collection(db, 'conversations', conversationId, 'messages'),
+      orderBy('createdAt', 'asc'),
+    )
 
-    function onStorage(event) {
-      if (event.key === DEMO_CONVERSATIONS_KEY || event.key === null) bump()
-    }
+    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+      setResult({
+        conversationId,
+        attempt,
+        messages: snapshot.docs.map((document) => ({
+          id: document.id,
+          ...document.data(),
+        })),
+        error: null,
+      })
+    }, (error) => {
+      setResult({
+        conversationId,
+        attempt,
+        messages: [],
+        error,
+      })
+    })
 
-    window.addEventListener('storage', onStorage)
-    window.addEventListener(DEMO_CONVERSATIONS_CHANGED, bump)
-    return () => {
-      window.removeEventListener('storage', onStorage)
-      window.removeEventListener(DEMO_CONVERSATIONS_CHANGED, bump)
-    }
-  }, [activeId])
+    return unsubscribe
+  }, [conversationId, attempt])
+
+  const retry = useCallback(() => setAttempt((value) => value + 1), [])
+  const resultIsCurrent =
+    result.conversationId === conversationId && result.attempt === attempt
 
   return {
-    messages,
-    loading: false,
-    error: activeId ? loadError : null,
+    messages: resultIsCurrent ? result.messages : [],
+    loading: Boolean(conversationId) && !resultIsCurrent,
+    error: resultIsCurrent ? result.error?.message ?? null : null,
     retry,
   }
 }

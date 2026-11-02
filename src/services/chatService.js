@@ -1,94 +1,172 @@
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query,
+  runTransaction,
+  serverTimestamp,
+  where,
+  writeBatch,
+} from 'firebase/firestore'
+import { db } from '../firebase/config'
 import { conversationIdFor } from '../utils/messages'
 
-/**
- * Temporary demo Conversation + Message store (localStorage).
- * Data owner: replace with Firestore chatService (getOrCreate + sendMessage + listeners).
- */
-
-export const DEMO_CONVERSATIONS_KEY = 'convo-demo-conversations'
-export const DEMO_CONVERSATIONS_CHANGED = 'convo-demo-conversations-changed'
-
-function readStore() {
-  try {
-    return JSON.parse(localStorage.getItem(DEMO_CONVERSATIONS_KEY) ?? '{}')
-  } catch {
-    return {}
+function mapUserDocument(snapshot) {
+  return {
+    ...snapshot.data(),
+    id: snapshot.id,
   }
 }
 
-function writeStore(store) {
-  localStorage.setItem(DEMO_CONVERSATIONS_KEY, JSON.stringify(store))
-  window.dispatchEvent(new Event(DEMO_CONVERSATIONS_CHANGED))
+export async function getAllUsers(currentUserId) {
+  if (!currentUserId) {
+    throw new Error('The current user ID is required.')
+  }
+
+  const snapshot = await getDocs(collection(db, 'users'))
+  return snapshot.docs
+    .map(mapUserDocument)
+    .filter((user) => user.id !== currentUserId)
 }
 
-/** Returns Conversation id if a Conversation already exists; otherwise null. */
-export function findExistingConversationId(currentUserId, peerId) {
-  if (!currentUserId || !peerId) return null
-  const id = conversationIdFor(currentUserId, peerId)
-  const store = readStore()
-  return store[id] ? id : null
+export function subscribeToUsers(currentUserId, callback, onError) {
+  if (!currentUserId) {
+    throw new Error('The current user ID is required.')
+  }
+
+  return onSnapshot(collection(db, 'users'), (snapshot) => {
+    const users = snapshot.docs
+      .map(mapUserDocument)
+      .filter((user) => user.id !== currentUserId)
+    callback(users)
+  }, onError)
 }
 
-/**
- * Creates Conversation on first send if needed, appends Message, returns conversationId.
- * @returns {Promise<string>}
- */
-export async function sendMessageToPeer({ currentUserId, peerId, text }) {
-  const trimmed = text.trim()
-  if (!currentUserId || !peerId || !trimmed) {
-    throw new Error('Could not send message')
+export function getConversationId(uid1, uid2) {
+  if (!uid1 || !uid2 || uid1 === uid2) {
+    throw new Error('A conversation requires two different user IDs.')
   }
+  return conversationIdFor(uid1, uid2)
+}
 
-  await delay(180)
+export async function findExistingConversationId(currentUserId, peerId) {
+  const conversationId = getConversationId(currentUserId, peerId)
+  const conversation = await getDoc(doc(db, 'conversations', conversationId))
+  return conversation.exists() ? conversationId : null
+}
 
-  const conversationId = conversationIdFor(currentUserId, peerId)
-  const store = readStore()
-  const existing = store[conversationId] ?? {
-    participants: [currentUserId, peerId].sort(),
-    messages: [],
-  }
+export async function getOrCreateConversation(uid1, uid2) {
+  const conversationId = getConversationId(uid1, uid2)
+  const conversationRef = doc(db, 'conversations', conversationId)
+  const participants = [uid1, uid2].sort()
 
-  const message = {
-    id:
-      typeof crypto !== 'undefined' && crypto.randomUUID
-        ? crypto.randomUUID()
-        : `msg_${Date.now()}`,
-    senderId: currentUserId,
-    text: trimmed,
-    createdAt: null,
-  }
-
-  existing.messages = [...existing.messages, message]
-  existing.lastMessage = trimmed
-  existing.updatedAt = new Date().toISOString()
-  store[conversationId] = existing
-  writeStore(store)
-
-  // Simulate serverTimestamp resolving after a short delay
-  setTimeout(() => {
-    const latest = readStore()
-    const convo = latest[conversationId]
-    if (!convo) return
-    const idx = convo.messages.findIndex((m) => m.id === message.id)
-    if (idx === -1) return
-    convo.messages[idx] = {
-      ...convo.messages[idx],
-      createdAt: new Date().toISOString(),
+  await runTransaction(db, async (transaction) => {
+    const conversation = await transaction.get(conversationRef)
+    if (!conversation.exists()) {
+      transaction.set(conversationRef, {
+        participants,
+        createdAt: serverTimestamp(),
+        lastMessage: null,
+        updatedAt: serverTimestamp(),
+      })
     }
-    writeStore(latest)
-  }, 160)
+  })
 
   return conversationId
 }
 
-export function listMessages(conversationId) {
-  if (!conversationId) return []
-  const store = readStore()
-  const convo = store[conversationId]
-  if (!convo?.messages) return []
-  return convo.messages.map((m) => ({ ...m }))
+export async function sendMessage(conversationId, senderId, text) {
+  if (!conversationId || !senderId || typeof text !== 'string') {
+    throw new Error('A conversation, sender, and message are required.')
+  }
+
+  const trimmed = text.trim()
+  if (!trimmed) {
+    throw new Error('Message cannot be empty.')
+  }
+  if (trimmed.length > 2000) {
+    throw new Error('Message cannot exceed 2000 characters.')
+  }
+
+  const messageRef = doc(collection(db, 'conversations', conversationId, 'messages'))
+  const conversationRef = doc(db, 'conversations', conversationId)
+  const batch = writeBatch(db)
+  batch.set(messageRef, {
+    senderId,
+    text: trimmed,
+    createdAt: serverTimestamp(),
+  })
+  batch.update(conversationRef, {
+    lastMessage: trimmed,
+    updatedAt: serverTimestamp(),
+  })
+
+  await batch.commit()
 }
 
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+export async function sendMessageToPeer({ currentUserId, peerId, text }) {
+  const conversationId = getConversationId(currentUserId, peerId)
+  if (typeof text !== 'string') {
+    throw new Error('A message is required.')
+  }
+  const trimmed = text.trim()
+  if (!trimmed) {
+    throw new Error('Message cannot be empty.')
+  }
+  if (trimmed.length > 2000) {
+    throw new Error('Message cannot exceed 2000 characters.')
+  }
+
+  const conversationRef = doc(db, 'conversations', conversationId)
+  const messageRef = doc(collection(db, 'conversations', conversationId, 'messages'))
+  await runTransaction(db, async (transaction) => {
+    const conversation = await transaction.get(conversationRef)
+    if (conversation.exists()) {
+      const participants = conversation.data().participants
+      if (!participants?.includes(currentUserId) || !participants.includes(peerId)) {
+        throw new Error('Conversation participants do not match.')
+      }
+      transaction.update(conversationRef, {
+        lastMessage: trimmed,
+        updatedAt: serverTimestamp(),
+      })
+    } else {
+      transaction.set(conversationRef, {
+        participants: [currentUserId, peerId].sort(),
+        createdAt: serverTimestamp(),
+        lastMessage: trimmed,
+        updatedAt: serverTimestamp(),
+      })
+    }
+
+    transaction.set(messageRef, {
+      senderId: currentUserId,
+      text: trimmed,
+      createdAt: serverTimestamp(),
+    })
+  })
+
+  return conversationId
+}
+
+export function subscribeToUserConversations(uid, callback, onError) {
+  if (!uid) {
+    throw new Error('The current user ID is required.')
+  }
+
+  const conversationsQuery = query(
+    collection(db, 'conversations'),
+    where('participants', 'array-contains', uid),
+    orderBy('updatedAt', 'desc'),
+  )
+
+  return onSnapshot(conversationsQuery, (snapshot) => {
+    callback(snapshot.docs.map((document) => ({
+      id: document.id,
+      ...document.data(),
+    })))
+  }, onError)
 }

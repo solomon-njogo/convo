@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "vitest run src/utils/messages.test.js",
+    "test:rules": "node scripts/test-firestore-rules.js",
     "test:watch": "vitest"
   },
   "dependencies": {
@@ -19,12 +20,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@firebase/rules-unit-testing": "^6.0.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "eslint": "^10.13.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
+    "firebase-tools": "^15.34.2",
     "globals": "^17.13.0",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"

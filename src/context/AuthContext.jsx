@@ -1,9 +1,7 @@
 import { createContext, useContext } from 'react'
 
 /**
- * Seam for the auth/routing owner.
- * Person A UI consumes: login, register, signOut,
- * user { uid, displayName, email } (uid matches users/{userId}).
+ * UI contract consumed by the auth forms, chat, and signed-in navigation.
  */
 export const AuthContext = createContext(null)
 
