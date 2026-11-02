@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { db } from '../firebase/config'
 
 const EMPTY_RESULT = {
   conversationId: null,
+  attempt: -1,
   messages: [],
-  loading: false,
   error: null,
 }
 
 export function useMessages(conversationId) {
+  const [attempt, setAttempt] = useState(0)
   const [result, setResult] = useState(EMPTY_RESULT)
 
   useEffect(() => {
@@ -23,29 +24,33 @@ export function useMessages(conversationId) {
     const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
       setResult({
         conversationId,
+        attempt,
         messages: snapshot.docs.map((document) => ({
           id: document.id,
           ...document.data(),
         })),
-        loading: false,
         error: null,
       })
     }, (error) => {
       setResult({
         conversationId,
+        attempt,
         messages: [],
-        loading: false,
-        error: error.message,
+        error,
       })
     })
 
     return unsubscribe
-  }, [conversationId])
+  }, [conversationId, attempt])
 
-  const resultIsCurrent = result.conversationId === conversationId
+  const retry = useCallback(() => setAttempt((value) => value + 1), [])
+  const resultIsCurrent =
+    result.conversationId === conversationId && result.attempt === attempt
+
   return {
     messages: resultIsCurrent ? result.messages : [],
-    loading: Boolean(conversationId) && (!resultIsCurrent || result.loading),
-    error: resultIsCurrent ? result.error : null,
+    loading: Boolean(conversationId) && !resultIsCurrent,
+    error: resultIsCurrent ? result.error?.message ?? null : null,
+    retry,
   }
 }

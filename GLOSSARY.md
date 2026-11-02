@@ -1,12 +1,12 @@
 # Convo
 
-Shared language for the real-time student chat app: who is signed in, how they register, and what identity the UI shows.
+Shared language for the real-time student chat app: who is signed in, how they find each other, and what identity the UI shows.
 
 ## Language
 
 **User profile**:
-The Firestore document at `users/{userId}` holding `displayName`, `email`, `photoURL`, and `createdAt` for a registered person.
-_Avoid_: Account, client, badge
+The Firestore document at `users/{userId}` holding `displayName`, `email`, `photoURL`, and `createdAt` for a registered person. The document id is the same stable id as the person's Auth uid.
+_Avoid_: Account, client, badge, currentUser
 
 **Display name**:
 The human-readable name stored on the User profile and collected only during Register.
@@ -14,7 +14,43 @@ _Avoid_: Username, handle, nickname (unless we later add a separate handle)
 
 **Signed-in identity**:
 Who the Navbar presents as present in this session — Display name when available, otherwise email.
-_Avoid_: User badge, account chip, client
+_Avoid_: User badge, account chip, client, currentUser
+
+**Peer**:
+Another person's User profile shown in the directory — everyone except the signed-in person.
+_Avoid_: Contact, friend, active user, other user
+
+**Selected peer**:
+The single Peer chosen as the other participant for the chat pane.
+_Avoid_: Active user, selected conversation, active chat partner
+
+**Peer directory**:
+The sidebar list of Peers available to select — not an inbox of existing conversations.
+_Avoid_: User list (as a product concept), contacts, conversation list, inbox
+
+**Peer search**:
+Filtering the Peer directory by a case-insensitive substring of Display name or email; the row still leads with Display name.
+_Avoid_: User query, find friends, global search
+
+**Conversation**:
+A chat between the signed-in person and exactly one Selected peer. It exists only after the first successful message send — selecting a Peer alone does not create it.
+_Avoid_: Thread, room, channel, chat session (as the stored entity)
+
+**Message**:
+One text unit inside a Conversation, shown in the chat pane as a sent or received bubble with a creation time.
+_Avoid_: Post, comment, chat item
+
+**Chat pane**:
+The main panel for the Selected peer — Message list plus Chat composer. On narrow viewports, Back clears the Selected peer and returns to the Peer directory.
+_Avoid_: Conversation list, inbox, active chat window (as a product name)
+
+**Back**:
+On narrow viewports with a Selected peer: the toolbar control that clears the Selected peer and returns to the Peer directory. With no Selected peer, that toolbar slot is Menu (opens/closes the Peer directory drawer). Back is not shown in the ChatWindow header.
+_Avoid_: Close chat, leave conversation, conversation list
+
+**Chat composer**:
+The chat-pane field and send control used to draft and send a Message to the Selected peer.
+_Avoid_: Message box, textbox (as the product name)
 
 **Register**:
 Creating Firebase Auth credentials plus a User profile. The Register form collects Display name, email, password, and a confirm-password field (Client validation only; confirm-password is not stored).

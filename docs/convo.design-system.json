@@ -478,7 +478,7 @@
       "description": "Displays a single chat message with alignment by sender.",
       "variants": ["sent", "received"],
       "states": ["default"],
-      "anatomy": ["container", "body text", "optional timestamp", "optional status"],
+      "anatomy": ["container", "optional display name (received only)", "body text", "timestamp"],
       "tokenBindings": {
         "sent.background": "color.brand.primary",
         "sent.text": "color.text.onPrimary",
@@ -494,13 +494,15 @@
         "padding.block": "spacing.2"
       },
       "accessibility": [
-        "Expose sender and time in accessible text, not color alone.",
+        "Expose sender Display name and time in accessible text on every bubble, not color alone.",
         "Do not nest interactive controls inside a bubble body."
       ],
       "rules": [
         "Sent messages use electric blue; received messages use quiet cloud.",
         "Keep bubble corners softer on the trailing edge toward the peer.",
-        "Timestamps stay caption-scale and never compete with body text."
+        "Timestamps stay caption-scale and never compete with body text.",
+        "Show a visible Display name only on received bubbles; sent bubbles rely on alignment.",
+        "While createdAt is pending, show caption Sending… then replace with formatted time."
       ]
     },
     "Avatar": {
@@ -543,35 +545,34 @@
       },
       "accessibility": [
         "Send button needs an accessible name even when icon-only.",
-        "Disable send when the field is empty or a send is in flight."
+        "Disable send when the field is empty, over 2000 characters, or a send is in flight."
       ],
       "rules": [
         "One primary send control per composer.",
-        "Keep the composer sticky to the bottom on mobile."
+        "Keep the composer sticky to the bottom on mobile.",
+        "Enter sends; Shift+Enter inserts a newline.",
+        "On send failure, keep the draft and show an inline error above the composer."
       ]
     },
     "UserListItem": {
-      "description": "Directory or conversation row for selecting a peer.",
+      "description": "Peer directory row for selecting a peer (not an inbox row).",
       "states": ["default", "hover", "selected", "focus"],
-      "anatomy": ["avatar", "display name", "optional preview", "optional unread badge"],
+      "anatomy": ["avatar", "display name"],
       "tokenBindings": {
         "default.background": "color.neutral.surface",
         "hover.background": "color.neutral.cloud",
         "selected.background": "color.brand.subtle",
         "name.style": "typography.styles.bodySmall",
         "name.color": "color.neutral.ink",
-        "preview.color": "color.neutral.inkMuted",
-        "preview.style": "typography.styles.caption",
         "radius": "radius.medium",
         "padding": "spacing.3"
       },
       "accessibility": [
-        "Entire row is one activatable control with the peer's name.",
-        "Unread state must include a text or badge label, not color alone."
+        "Entire row is one activatable control with the peer's name."
       ],
       "rules": [
         "Selected row uses brand subtle, not a heavy card shadow.",
-        "Preview text truncates to one line."
+        "Peer directory rows show avatar and Display name only — no last-message preview or unread badge."
       ]
     }
   },
@@ -580,9 +581,19 @@
       "description": "How Convo presents chat content so scanning stays easy.",
       "rules": [
         "Align sent messages to the end edge and received messages to the start edge.",
-        "Prefer short timestamps near the bubble over dense metadata rows.",
+        "Prefer short locale-time timestamps near the bubble over dense metadata rows or relative 'ago' labels.",
         "Empty states invite a next action: search a user or start a chat.",
-        "Color is never the sole status channel for delivery or unread."
+        "Color is never the sole status channel for delivery or error.",
+        "Auto-scroll to the latest message only when already near the bottom, on first paint, or after the signed-in person's own successful send.",
+        "Do not invent optimistic bubbles; clear the composer only after onSend succeeds."
+      ]
+    },
+    "chatPaneChrome": {
+      "description": "ChatWindow header and narrow toolbar for Selected peer vs Peer directory.",
+      "rules": [
+        "With a Selected peer, ChatWindow shows a medium Avatar and Display name above MessageList and ChatComposer.",
+        "On narrow viewports, Back lives only in the toolbar (not the ChatWindow header); with no Selected peer the same slot is Menu for the Peer directory drawer.",
+        "Changing Selected peer hard-resets composer draft, send error, and conversation binding."
       ]
     },
     "progressiveDisclosure": {

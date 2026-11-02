@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 
 /**
- * UI contract consumed by the auth forms and signed-in navigation.
+ * UI contract consumed by the auth forms, chat, and signed-in navigation.
  */
 export const AuthContext = createContext(null)
 

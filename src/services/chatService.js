@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   onSnapshot,
   orderBy,
@@ -11,11 +12,12 @@ import {
   writeBatch,
 } from 'firebase/firestore'
 import { db } from '../firebase/config'
+import { conversationIdFor } from '../utils/messages'
 
 function mapUserDocument(snapshot) {
   return {
     ...snapshot.data(),
-    uid: snapshot.id,
+    id: snapshot.id,
   }
 }
 
@@ -27,7 +29,7 @@ export async function getAllUsers(currentUserId) {
   const snapshot = await getDocs(collection(db, 'users'))
   return snapshot.docs
     .map(mapUserDocument)
-    .filter((user) => user.uid !== currentUserId)
+    .filter((user) => user.id !== currentUserId)
 }
 
 export function subscribeToUsers(currentUserId, callback, onError) {
@@ -38,7 +40,7 @@ export function subscribeToUsers(currentUserId, callback, onError) {
   return onSnapshot(collection(db, 'users'), (snapshot) => {
     const users = snapshot.docs
       .map(mapUserDocument)
-      .filter((user) => user.uid !== currentUserId)
+      .filter((user) => user.id !== currentUserId)
     callback(users)
   }, onError)
 }
@@ -47,8 +49,13 @@ export function getConversationId(uid1, uid2) {
   if (!uid1 || !uid2 || uid1 === uid2) {
     throw new Error('A conversation requires two different user IDs.')
   }
+  return conversationIdFor(uid1, uid2)
+}
 
-  return [uid1, uid2].sort().join('_')
+export async function findExistingConversationId(currentUserId, peerId) {
+  const conversationId = getConversationId(currentUserId, peerId)
+  const conversation = await getDoc(doc(db, 'conversations', conversationId))
+  return conversation.exists() ? conversationId : null
 }
 
 export async function getOrCreateConversation(uid1, uid2) {
@@ -98,6 +105,51 @@ export async function sendMessage(conversationId, senderId, text) {
   })
 
   await batch.commit()
+}
+
+export async function sendMessageToPeer({ currentUserId, peerId, text }) {
+  const conversationId = getConversationId(currentUserId, peerId)
+  if (typeof text !== 'string') {
+    throw new Error('A message is required.')
+  }
+  const trimmed = text.trim()
+  if (!trimmed) {
+    throw new Error('Message cannot be empty.')
+  }
+  if (trimmed.length > 2000) {
+    throw new Error('Message cannot exceed 2000 characters.')
+  }
+
+  const conversationRef = doc(db, 'conversations', conversationId)
+  const messageRef = doc(collection(db, 'conversations', conversationId, 'messages'))
+  await runTransaction(db, async (transaction) => {
+    const conversation = await transaction.get(conversationRef)
+    if (conversation.exists()) {
+      const participants = conversation.data().participants
+      if (!participants?.includes(currentUserId) || !participants.includes(peerId)) {
+        throw new Error('Conversation participants do not match.')
+      }
+      transaction.update(conversationRef, {
+        lastMessage: trimmed,
+        updatedAt: serverTimestamp(),
+      })
+    } else {
+      transaction.set(conversationRef, {
+        participants: [currentUserId, peerId].sort(),
+        createdAt: serverTimestamp(),
+        lastMessage: trimmed,
+        updatedAt: serverTimestamp(),
+      })
+    }
+
+    transaction.set(messageRef, {
+      senderId: currentUserId,
+      text: trimmed,
+      createdAt: serverTimestamp(),
+    })
+  })
+
+  return conversationId
 }
 
 export function subscribeToUserConversations(uid, callback, onError) {

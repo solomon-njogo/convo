@@ -132,6 +132,7 @@ export default function Login({ onGoToRegister }) {
             Register
           </button>
         </p>
+
       </div>
     </div>
   )

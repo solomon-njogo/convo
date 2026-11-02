@@ -38,13 +38,15 @@ npm ci
 1. Create a project in the Firebase Console and register a Web App.
 2. Enable **Authentication → Email/Password**.
 3. Create a **Cloud Firestore** database.
-4. Copy `.env.example` to `.env` and fill in your web config. In PowerShell:
+4. Invite the other collaborator as an Editor from Project Settings → Users
+   and permissions.
+5. Copy `.env.example` to `.env` and fill in your web config. In PowerShell:
 
    ```powershell
    Copy-Item .env.example .env
    ```
 
-5. Publish the repository's `firestore.rules` to the project before testing
+6. Publish the repository's `firestore.rules` to the project before testing
    Firestore reads or writes.
 
 Do not commit `.env`. Firebase web config is not a security boundary—protect access with Authentication and Security Rules. Never put service-account keys in the frontend.
@@ -55,7 +57,11 @@ Do not commit `.env`. Firebase web config is not a security boundary—protect a
 npm run dev
 ```
 
-Other scripts: `npm run build`, `npm run preview`, `npm run lint`.
+Other scripts: `npm run build`, `npm run preview`, `npm run lint`, and
+`npm test` for unit tests.
+Run the Firestore rules test suite against the local emulator with
+`npm run test:rules`; Java is required for the emulator. This uses a demo
+project ID and does not require the shared project's credentials.
 
 The Firebase integration expects these exports and shapes:
 
@@ -66,8 +72,15 @@ The Firebase integration expects these exports and shapes:
 - `loginUser({ email, password })` resolves to a Firebase `UserCredential`.
 - `getAllUsers(currentUserId)` returns user profiles excluding the caller;
   `subscribeToUsers` is the real-time variant.
+- `usePeers()` exposes `{ peers, status, error, retry }`; each peer has `id`,
+  `displayName`, `email`, and `photoURL`.
 - `getConversationId(uid1, uid2)` uses sorted UIDs joined by `_`;
   `getOrCreateConversation(uid1, uid2)` resolves to that stable ID.
+- `findExistingConversationId(currentUserId, peerId)` resolves to the existing
+  conversation ID or `null` without creating an empty conversation.
+- Selecting a Peer only reads an existing conversation; the first successful
+  `sendMessageToPeer({ currentUserId, peerId, text })` creates its conversation
+  and message together.
 - `sendMessage(conversationId, senderId, text)` atomically creates the message
   and updates the conversation preview and timestamp.
 - `useMessages(conversationId)` returns `{ messages, loading, error }` and

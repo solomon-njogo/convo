@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Navbar from './components/Navbar'
+import Chat from './pages/Chat'
 import { AuthProvider } from './context/AuthProvider'
 import { useAuth } from './context/AuthContext'
 import Login from './pages/Login'
@@ -22,9 +23,8 @@ function AppContent() {
     return (
       <>
         <Navbar onSignedOut={() => setAuthView('login')} />
-        <main className="app-signed-in">
-          <h1>You&apos;re signed in</h1>
-          <p>Chat UI arrives next. Use Sign out in the navbar to return to Login.</p>
+        <main className="app-chat">
+          <Chat />
         </main>
       </>
     )

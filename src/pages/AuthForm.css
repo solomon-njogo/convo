@@ -102,6 +102,21 @@
   cursor: not-allowed;
 }
 
+.auth-demo-hint {
+  margin: var(--spacing-4) 0 0;
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--color-neutral-line);
+  color: var(--color-neutral-ink-soft);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-body);
+}
+
+.auth-demo-hint code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.95em;
+  color: var(--color-neutral-ink);
+}
+
 @keyframes auth-panel-in {
   from {
     opacity: 0;
