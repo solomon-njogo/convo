@@ -33,14 +33,14 @@ beforeAll(async () => {
       rules: readFileSync(new URL('../firestore.rules', import.meta.url), 'utf8'),
     },
   })
-})
+}, 30_000)
 
 beforeEach(async () => {
   await testEnvironment.clearFirestore()
 })
 
 afterAll(async () => {
-  await testEnvironment.cleanup()
+  if (testEnvironment) await testEnvironment.cleanup()
 })
 
 async function seedConversation() {

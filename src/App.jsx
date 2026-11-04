@@ -5,10 +5,11 @@ import { AuthProvider } from './context/AuthProvider'
 import { useAuth } from './context/AuthContext'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import { mapAuthError } from './utils/authErrors'
 import './App.css'
 
 function AppContent() {
-  const { user, loading, error } = useAuth()
+  const { user, loading, error, authActionError } = useAuth()
   const [authView, setAuthView] = useState('login')
 
   if (loading) {
@@ -24,6 +25,11 @@ function AppContent() {
       <>
         <Navbar onSignedOut={() => setAuthView('login')} />
         <main className="app-chat">
+          {authActionError ? (
+            <p className="auth-form-error" role="alert">
+              {mapAuthError(authActionError)}
+            </p>
+          ) : null}
           <Chat />
         </main>
       </>
