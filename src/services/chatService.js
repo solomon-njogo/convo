@@ -4,7 +4,6 @@ import {
   getDoc,
   getDocs,
   onSnapshot,
-  orderBy,
   query,
   runTransaction,
   serverTimestamp,
@@ -13,6 +12,12 @@ import {
 } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import { conversationIdFor } from '../utils/messages'
+
+function timestampMillis(timestamp) {
+  if (typeof timestamp?.toMillis === 'function') return timestamp.toMillis()
+  if (typeof timestamp?.seconds === 'number') return timestamp.seconds * 1000
+  return 0
+}
 
 function mapUserDocument(snapshot) {
   return {
@@ -160,13 +165,15 @@ export function subscribeToUserConversations(uid, callback, onError) {
   const conversationsQuery = query(
     collection(db, 'conversations'),
     where('participants', 'array-contains', uid),
-    orderBy('updatedAt', 'desc'),
   )
 
   return onSnapshot(conversationsQuery, (snapshot) => {
-    callback(snapshot.docs.map((document) => ({
-      id: document.id,
-      ...document.data(),
-    })))
+    const conversations = snapshot.docs
+      .map((document) => ({
+        id: document.id,
+        ...document.data(),
+      }))
+      .sort((a, b) => timestampMillis(b.updatedAt) - timestampMillis(a.updatedAt))
+    callback(conversations)
   }, onError)
 }

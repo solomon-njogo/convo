@@ -5,21 +5,50 @@ import {
   signOut,
   updateProfile,
 } from 'firebase/auth'
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
+import { doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore'
 import { auth, db } from '../firebase/config'
 
+function getUserProfile(user, displayName = user.displayName) {
+  const email = user.email?.trim()
+  const name = displayName?.trim().slice(0, 100)
+
+  if (!email || !name) {
+    throw new Error('The account is missing the email or display name required for its profile.')
+  }
+
+  return {
+    displayName: name,
+    email,
+    photoURL: user.photoURL ?? null,
+    createdAt: serverTimestamp(),
+  }
+}
+
+async function ensureUserProfile(user) {
+  const profileRef = doc(db, 'users', user.uid)
+  const fallbackName = user.email?.split('@')[0] || 'Student'
+  const profile = getUserProfile(user, user.displayName || fallbackName)
+
+  await runTransaction(db, async (transaction) => {
+    const snapshot = await transaction.get(profileRef)
+    if (!snapshot.exists()) {
+      transaction.set(profileRef, profile)
+    }
+  })
+}
+
 export async function registerUser({ email, password, displayName }) {
-  const credential = await createUserWithEmailAndPassword(auth, email, password)
+  const normalizedEmail = email.trim()
+  const normalizedDisplayName = displayName.trim()
+  const credential = await createUserWithEmailAndPassword(auth, normalizedEmail, password)
   const user = credential.user
 
   try {
-    await updateProfile(user, { displayName })
-    await setDoc(doc(db, 'users', user.uid), {
-      displayName,
-      email,
-      photoURL: user.photoURL ?? null,
-      createdAt: serverTimestamp(),
-    })
+    await updateProfile(user, { displayName: normalizedDisplayName })
+    await setDoc(
+      doc(db, 'users', user.uid),
+      getUserProfile(user, normalizedDisplayName),
+    )
   } catch (error) {
     try {
       await deleteUser(user)
@@ -37,7 +66,24 @@ export async function registerUser({ email, password, displayName }) {
 }
 
 export async function loginUser({ email, password }) {
-  return signInWithEmailAndPassword(auth, email, password)
+  const credential = await signInWithEmailAndPassword(auth, email.trim(), password)
+
+  try {
+    await ensureUserProfile(credential.user)
+  } catch (error) {
+    try {
+      await signOut(auth)
+    } catch (signOutError) {
+      throw new AggregateError(
+        [error, signOutError],
+        'Could not restore the user profile or sign out.',
+        { cause: signOutError },
+      )
+    }
+    throw error
+  }
+
+  return credential
 }
 
 export async function logoutUser() {

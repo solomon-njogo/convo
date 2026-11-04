@@ -70,6 +70,9 @@ The Firebase integration expects these exports and shapes:
 - `registerUser({ email, password, displayName })` creates the Auth account and
   corresponding `users/{uid}` profile.
 - `loginUser({ email, password })` resolves to a Firebase `UserCredential`.
+  If a previous interrupted registration left the Auth account without its
+  Firestore profile, signing in recreates the profile once Firestore rules
+  permit it.
 - `getAllUsers(currentUserId)` returns user profiles excluding the caller;
   `subscribeToUsers` is the real-time variant.
 - `usePeers()` exposes `{ peers, status, error, retry }`; each peer has `id`,

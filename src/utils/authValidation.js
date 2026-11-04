@@ -25,6 +25,12 @@ export function validateRegister({ displayName, email, password, confirmPassword
 
   if (!trimmedName) {
     errors.displayName = 'Display name is required'
+  } else if (trimmedName.length > 100) {
+    errors.displayName = 'Display name must be at most 100 characters'
+  }
+
+  if (email?.trim().length > 254) {
+    errors.email = 'Email must be at most 254 characters'
   }
 
   if (!confirmPassword) {

@@ -63,6 +63,19 @@ async function seedConversation() {
 }
 
 describe('Firestore security rules', () => {
+  it('allows an authenticated user to create a valid profile', async () => {
+    const firestore = testEnvironment.authenticatedContext('user-a').firestore()
+
+    await assertSucceeds(
+      setDoc(doc(firestore, 'users', 'user-a'), {
+        displayName: 'Student A',
+        email: 'student-a@example.test',
+        photoURL: null,
+        createdAt: serverTimestamp(),
+      }),
+    )
+  })
+
   it('reject unauthenticated profile, conversation, and message reads', async () => {
     const firestore = testEnvironment.unauthenticatedContext().firestore()
     await seedConversation()
