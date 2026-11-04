@@ -1,0 +1,3 @@
+# Person A owns messaging UI, not message plumbing
+
+Person A delivers `ChatWindow`, `MessageList`, and `MessageInput` (plus Chat pane wiring from Selected peer), including empty/loading/error presentation, ChatComposer keyboard/send locks, MessageBubble alignment, and near-bottom auto-scroll. `useMessages`, `chatService`, Conversation create-on-first-send, and Firestore listeners stay with the messaging/data owner so UI and real-time plumbing can land in parallel without one person blocking the other. Temporary localStorage demo stubs may sit at those seams (same pattern as `usePeers` / demo Auth) until the data owner replaces them — the UI must keep consuming only the public hook/service contracts.

@@ -1,0 +1,126 @@
+/**
+ * Convo design tokens — generated from docs/convo.design-system.json
+ * Foundation: Studynt UI (docs/studynt.design-system.json)
+ */
+:root {
+  /* Color — brand */
+  --color-brand-primary: #1769ff;
+  --color-brand-hover: #0755de;
+  --color-brand-pressed: #0646b8;
+  --color-brand-subtle: #eaf2ff;
+
+  /* Color — text */
+  --color-text-on-primary: #ffffff;
+
+  /* Color — neutral */
+  --color-neutral-ink: #17151f;
+  --color-neutral-ink-soft: #5f5b68;
+  --color-neutral-ink-muted: #8a8692;
+  --color-neutral-surface: #ffffff;
+  --color-neutral-cloud: #f8f7fa;
+  --color-neutral-line: #e6e3e9;
+  --color-neutral-disabled: #edeaf0;
+  --color-neutral-disabled-text: #a8a4b0;
+
+  /* Color — accent */
+  --color-accent-mint: #8ee2cf;
+  --color-accent-mint-strong: #176653;
+  --color-accent-mint-subtle: #e8f8f4;
+  --color-accent-sun: #ffd66b;
+  --color-accent-sun-subtle: #fff7dc;
+
+  /* Color — feedback / focus */
+  --color-feedback-danger: #c23f4f;
+  --color-feedback-danger-subtle: #fff0f2;
+  --color-focus-ring: #1769ff;
+
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-size-caption: 0.75rem;
+  --font-size-label: 0.75rem;
+  --font-size-body-small: 0.875rem;
+  --font-size-body: 1rem;
+  --font-size-title-small: 1.25rem;
+  --font-size-title: 2rem;
+  --font-size-display: 3.5rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 800;
+  --line-height-tight: 1.15;
+  --line-height-heading: 1.3;
+  --line-height-body: 1.6;
+  --line-height-relaxed: 1.75;
+  --letter-spacing-display: -0.05em;
+  --letter-spacing-heading: -0.03em;
+  --letter-spacing-normal: 0em;
+
+  /* Spacing */
+  --spacing-0: 0rem;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+
+  /* Radius */
+  --radius-small: 0.625rem;
+  --radius-medium: 0.875rem;
+  --radius-large: 1.25rem;
+  --radius-device: 2rem;
+  --radius-full: 9999px;
+
+  /* Size */
+  --size-touch-target-minimum: 44px;
+  --size-button-height: 2.65rem;
+  --size-input-height: 3rem;
+  --size-focus-ring-width: 2px;
+  --size-focus-ring-offset: 2px;
+  --size-nav-height: 3.5rem;
+  --size-auth-max: 22.5rem;
+  --size-message-max: 75%;
+  --size-sidebar-width: 20rem;
+  --size-avatar-small: 2rem;
+  --size-avatar-medium: 2.5rem;
+  --size-content-mobile-padding: 1.25rem;
+
+  /* Motion */
+  --motion-duration-fast: 160ms;
+  --motion-duration-standard: 220ms;
+  --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Breakpoints (for reference in media queries) */
+  --breakpoint-tablet: 780px;
+  --breakpoint-desktop: 1050px;
+
+  /* Semantic aliases used by app surfaces */
+  --bg: var(--color-neutral-cloud);
+  --surface: var(--color-neutral-surface);
+  --text: var(--color-neutral-ink-soft);
+  --text-h: var(--color-neutral-ink);
+  --border: var(--color-neutral-line);
+  --accent: var(--color-brand-primary);
+  --accent-strong: var(--color-brand-hover);
+  --accent-bg: var(--color-brand-subtle);
+  --focus: var(--color-focus-ring);
+  --danger: var(--color-feedback-danger);
+  --danger-bg: var(--color-feedback-danger-subtle);
+  --ink: var(--color-neutral-ink);
+  --mute: var(--color-neutral-ink-soft);
+
+  font: 16px / var(--line-height-body) var(--font-sans);
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
