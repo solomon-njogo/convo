@@ -1,6 +1,5 @@
 import {
   createUserWithEmailAndPassword,
-  deleteUser,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
@@ -43,24 +42,11 @@ export async function registerUser({ email, password, displayName }) {
   const credential = await createUserWithEmailAndPassword(auth, normalizedEmail, password)
   const user = credential.user
 
-  try {
-    await updateProfile(user, { displayName: normalizedDisplayName })
-    await setDoc(
-      doc(db, 'users', user.uid),
-      getUserProfile(user, normalizedDisplayName),
-    )
-  } catch (error) {
-    try {
-      await deleteUser(user)
-    } catch (cleanupError) {
-      throw new AggregateError(
-        [error, cleanupError],
-        'Registration failed and the new account could not be removed.',
-        { cause: cleanupError },
-      )
-    }
-    throw new Error('Could not create the user profile.', { cause: error })
-  }
+  await updateProfile(user, { displayName: normalizedDisplayName })
+  await setDoc(
+    doc(db, 'users', user.uid),
+    getUserProfile(user, normalizedDisplayName),
+  )
 
   return user
 }
@@ -68,20 +54,7 @@ export async function registerUser({ email, password, displayName }) {
 export async function loginUser({ email, password }) {
   const credential = await signInWithEmailAndPassword(auth, email.trim(), password)
 
-  try {
-    await ensureUserProfile(credential.user)
-  } catch (error) {
-    try {
-      await signOut(auth)
-    } catch (signOutError) {
-      throw new AggregateError(
-        [error, signOutError],
-        'Could not restore the user profile or sign out.',
-        { cause: signOutError },
-      )
-    }
-    throw error
-  }
+  await ensureUserProfile(credential.user)
 
   return credential
 }

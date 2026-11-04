@@ -46,8 +46,18 @@ npm ci
    Copy-Item .env.example .env
    ```
 
-6. Publish the repository's `firestore.rules` to the project before testing
-   Firestore reads or writes.
+6. Make sure `VITE_FIREBASE_PROJECT_ID` in `.env` identifies the same Firebase
+   project where the rules will be deployed.
+7. Sign in to Firebase CLI and deploy the repository's rules once:
+
+   ```bash
+   npx firebase-tools login
+   npx firebase-tools deploy --only firestore:rules --project YOUR_FIREBASE_PROJECT_ID
+   ```
+
+   Pushing code does not deploy Firestore rules. If a profile write is denied
+   after registration, the Auth account remains signed in. Once the rules are
+   deployed, sign out and back in; login will recreate the missing profile.
 
 Do not commit `.env`. Firebase web config is not a security boundary—protect access with Authentication and Security Rules. Never put service-account keys in the frontend.
 

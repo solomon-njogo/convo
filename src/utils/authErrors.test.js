@@ -7,7 +7,8 @@ describe('mapAuthError', () => {
       cause: { code: 'permission-denied' },
     })
 
-    expect(mapAuthError(error)).toContain('Publish firestore.rules')
+    expect(mapAuthError(error)).toContain('deploy firestore.rules')
+    expect(mapAuthError(error)).toContain('remains signed in')
   })
 
   it('finds Firebase errors wrapped in an AggregateError', () => {
@@ -16,7 +17,7 @@ describe('mapAuthError', () => {
       'Registration cleanup failed',
     )
 
-    expect(mapAuthError(error)).toContain('Publish firestore.rules')
+    expect(mapAuthError(error)).toContain('deploy firestore.rules')
   })
 
   it('keeps invalid credentials distinct from Firestore failures', () => {

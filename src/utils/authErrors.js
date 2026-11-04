@@ -40,7 +40,7 @@ export function mapAuthError(error) {
   }
 
   if (code === 'permission-denied') {
-    return 'Firestore denied access to your profile. Publish firestore.rules to the configured Firebase project, then sign in again.'
+    return 'Firestore denied access to your profile. Your account remains signed in. Ask a project maintainer to deploy firestore.rules to the configured Firebase project, then sign out and back in to restore your profile.'
   }
 
   if (code === 'auth/operation-not-allowed') {
