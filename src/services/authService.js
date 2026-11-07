@@ -4,8 +4,16 @@ import {
   signOut,
   updateProfile,
 } from 'firebase/auth'
-import { doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore'
+import {
+  doc,
+  getDoc,
+  runTransaction,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore'
 import { auth, db } from '../firebase/config'
+import { validateDisplayName } from '../utils/authValidation'
 
 function getUserProfile(user, displayName = user.displayName) {
   const email = user.email?.trim()
@@ -57,6 +65,37 @@ export async function loginUser({ email, password }) {
   await ensureUserProfile(credential.user)
 
   return credential
+}
+
+export async function updateDisplayName(displayName) {
+  const user = auth.currentUser
+  if (!user) {
+    throw new Error('You must be signed in to update your display name.')
+  }
+
+  const displayNameError = validateDisplayName(displayName)
+  if (displayNameError) {
+    throw new Error(displayNameError)
+  }
+
+  const normalizedDisplayName = displayName.trim()
+  const profileRef = doc(db, 'users', user.uid)
+  const snapshot = await getDoc(profileRef)
+
+  if (!snapshot.exists()) {
+    throw new Error('Your profile could not be found. Sign out and back in to restore it.')
+  }
+
+  const existing = snapshot.data()
+  await updateProfile(user, { displayName: normalizedDisplayName })
+  await updateDoc(profileRef, {
+    displayName: normalizedDisplayName,
+    email: existing.email,
+    photoURL: existing.photoURL ?? null,
+    createdAt: existing.createdAt,
+  })
+  await user.reload()
+  return auth.currentUser
 }
 
 export async function logoutUser() {

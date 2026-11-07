@@ -2,7 +2,7 @@ export default function UserSearch({ value, onChange, id = 'peer-search' }) {
   return (
     <div className="field peer-search">
       <label className="field__label" htmlFor={id}>
-        Search students
+        Find a student
       </label>
       <input
         id={id}

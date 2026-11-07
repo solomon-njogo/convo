@@ -32,24 +32,24 @@ export function mapAuthError(error) {
   const code = getFirebaseErrorCode(error)
 
   if (DUPLICATE_EMAIL_CODES.has(code)) {
-    return 'This email is already registered'
+    return 'This email is already registered. Sign in, or use a different email.'
   }
 
   if (BAD_CREDENTIAL_CODES.has(code)) {
-    return 'Incorrect email or password'
+    return 'That email or password doesn’t match. Check both and try again.'
   }
 
   if (code === 'permission-denied') {
-    return 'Firestore denied access to your profile. Your account remains signed in. Ask a project maintainer to deploy firestore.rules to the configured Firebase project, then sign out and back in to restore your profile.'
+    return 'We couldn’t save your profile because Firestore denied access. You remain signed in. Ask whoever manages this Convo project to deploy firestore.rules, then sign out and sign in again.'
   }
 
   if (code === 'auth/operation-not-allowed') {
-    return 'Email/password sign-in is disabled. Enable the provider in Firebase Authentication.'
+    return 'Email and password sign-in is turned off for this project. Ask whoever manages Convo to enable it in Firebase Authentication.'
   }
 
   if (code === 'auth/too-many-requests') {
-    return 'Too many attempts. Please wait before trying again.'
+    return 'Too many attempts. Wait a minute, then try again.'
   }
 
-  return 'Something went wrong. Please try again.'
+  return 'We couldn’t finish that. Check your connection and try again.'
 }

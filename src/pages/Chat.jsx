@@ -20,9 +20,9 @@ function readIsWide() {
   return window.matchMedia(TABLET_MQ).matches
 }
 
-export default function Chat() {
+export default function Chat({ onOpenPeerProfile }) {
   const { user } = useAuth()
-  const { peers: profiles, status, error, retry } = usePeers()
+  const { peers: profiles, status, error: peersError, retry } = usePeers()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPeerId, setSelectedPeerId] = useState(null)
   const [conversationId, setConversationId] = useState(null)
@@ -92,10 +92,12 @@ export default function Chat() {
     try {
       const id = await findExistingConversationId(user.uid, peerId)
       if (selectedPeerIdRef.current === peerId) setConversationId(id)
-    } catch (error) {
+    } catch {
       if (selectedPeerIdRef.current === peerId) {
         setConversationLookupError(
-          error instanceof Error ? error : new Error('Could not load conversation'),
+          new Error(
+            'We couldn’t open this chat. Check your connection and try again.',
+          ),
         )
       }
     }
@@ -133,7 +135,7 @@ export default function Chat() {
 
   async function handleSend(text) {
     if (!user?.uid || !selectedPeer) {
-      throw new Error('Select a student before sending')
+      throw new Error('Choose a student before sending a message.')
     }
     const peerIdAtSend = selectedPeer.id
     const nextId = await sendMessageToPeer({
@@ -182,8 +184,8 @@ export default function Chat() {
               {showBack
                 ? 'Back to students'
                 : sidebarOpen
-                  ? 'Close peers'
-                  : 'Open peers'}
+                  ? 'Close students'
+                  : 'Open students'}
             </span>
           </button>
           <p className="chat-toolbar__label">
@@ -196,7 +198,7 @@ export default function Chat() {
         <button
           type="button"
           className="chat-backdrop"
-          aria-label="Close peers"
+          aria-label="Close students"
           onClick={() => {
             setSidebarOpen(false)
             toggleRef.current?.focus()
@@ -227,7 +229,7 @@ export default function Chat() {
             selectedPeerId={selectedVisible}
             onSelectPeer={handleSelectPeer}
             status={status}
-            error={error}
+            error={peersError}
             onRetry={retry}
             searchQuery={searchQuery}
           />
@@ -240,15 +242,27 @@ export default function Chat() {
             peer={selectedPeer}
             messages={messages}
             loading={Boolean(conversationId) && loading}
-            error={conversationLookupError ?? messagesError}
+            error={
+              conversationLookupError ??
+              (messagesError
+                ? new Error(
+                    'We couldn’t load messages. Check your connection and try again.',
+                  )
+                : null)
+            }
             onRetry={handleRetryMessages}
             currentUserId={user?.uid}
             onSend={handleSend}
             stickToLatestToken={stickToLatestToken}
+            onOpenPeerProfile={onOpenPeerProfile}
           />
         ) : (
           <div className="chat-pane__empty">
-            <p>Select a student to start chatting</p>
+            <p className="chat-pane__empty-title">Pick a classmate</p>
+            <p>
+              Choose someone from Students, then send the first message to start
+              chatting.
+            </p>
           </div>
         )}
       </section>

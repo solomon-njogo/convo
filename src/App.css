@@ -1,7 +1,26 @@
-.app-chat {
+.app-chat,
+.app-profile,
+.app-signed-in {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
   width: 100%;
+}
+
+.app-signed-in {
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8) var(--size-content-mobile-padding);
+}
+
+.app-session-status {
+  margin: 0;
+  color: var(--color-neutral-ink-soft);
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body);
+}
+
+.app-chat > .auth-form-error {
+  margin: var(--spacing-3) var(--size-content-mobile-padding) 0;
 }

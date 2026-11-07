@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../firebase/config'
-import { loginUser, logoutUser, registerUser } from '../services/authService'
+import {
+  loginUser,
+  logoutUser,
+  registerUser,
+  updateDisplayName as updateDisplayNameService,
+} from '../services/authService'
 import { AuthContext } from './AuthContext'
 
 export function AuthProvider({ children }) {
@@ -44,6 +49,18 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
+  const updateDisplayName = useCallback(async (displayName) => {
+    setAuthActionError(null)
+    try {
+      const nextUser = await updateDisplayNameService(displayName)
+      setUser(nextUser)
+      return nextUser
+    } catch (actionError) {
+      setAuthActionError(actionError)
+      throw actionError
+    }
+  }, [])
+
   const signOut = useCallback(async () => {
     await logoutUser()
     setAuthActionError(null)
@@ -57,8 +74,9 @@ export function AuthProvider({ children }) {
     authActionError,
     login,
     register,
+    updateDisplayName,
     signOut,
-  }), [user, loading, error, authActionError, login, register, signOut])
+  }), [user, loading, error, authActionError, login, register, updateDisplayName, signOut])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

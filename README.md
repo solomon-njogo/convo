@@ -76,15 +76,18 @@ project ID and does not require the shared project's credentials.
 The Firebase integration expects these exports and shapes:
 
 - `useAuth()` exposes `user`, `currentUser`, `loading`, `error`, `login`,
-  `register`, and `signOut`. `user` is the Firebase Auth user.
+  `register`, `updateDisplayName`, and `signOut`. `user` is the Firebase Auth user.
 - `registerUser({ email, password, displayName })` creates the Auth account and
   corresponding `users/{uid}` profile.
 - `loginUser({ email, password })` resolves to a Firebase `UserCredential`.
   If a previous interrupted registration left the Auth account without its
   Firestore profile, signing in recreates the profile once Firestore rules
   permit it.
+- `updateDisplayName(displayName)` syncs Auth and the owner's Firestore profile.
+  Navbar opens your Profile; the chat header opens a peer's Profile (view-only).
 - `getAllUsers(currentUserId)` returns user profiles excluding the caller;
-  `subscribeToUsers` is the real-time variant.
+  `subscribeToUsers` is the real-time variant. `getUserById` / `subscribeToUser`
+  load a single profile (including self).
 - `usePeers()` exposes `{ peers, status, error, retry }`; each peer has `id`,
   `displayName`, `email`, and `photoURL`.
 - `getConversationId(uid1, uid2)` uses sorted UIDs joined by `_`;
@@ -104,7 +107,7 @@ The Firebase integration expects these exports and shapes:
 ```
 src/
   components/     # Navbar, UserList, UserSearch, ChatWindow, MessageList, MessageInput
-  pages/          # Login, Register, Chat
+  pages/          # Login, Register, Chat, Profile
   context/        # AuthContext, AuthProvider
   hooks/          # useMessages
   services/       # authService, chatService

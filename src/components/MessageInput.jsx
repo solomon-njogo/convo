@@ -2,7 +2,11 @@ import { useId, useState } from 'react'
 import { Send } from 'lucide-react'
 import { canSendMessage, getComposerHint } from '../utils/messages'
 
-export default function MessageInput({ onSend, disabled = false }) {
+export default function MessageInput({
+  onSend,
+  disabled = false,
+  peerDisplayName = '',
+}) {
   const [text, setText] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [sendError, setSendError] = useState(null)
@@ -12,6 +16,8 @@ export default function MessageInput({ onSend, disabled = false }) {
 
   const hint = getComposerHint(text)
   const canSend = canSendMessage(text) && !isSending && !disabled
+  const name = peerDisplayName.trim()
+  const placeholder = name ? `Message ${name}` : 'Write a message'
 
   async function submit() {
     if (!canSendMessage(text) || isSending || disabled) return
@@ -24,7 +30,11 @@ export default function MessageInput({ onSend, disabled = false }) {
       await onSend(draft)
       setText('')
     } catch (err) {
-      setSendError(err instanceof Error ? err.message : 'Could not send message')
+      const detail =
+        err instanceof Error && err.message.trim()
+          ? err.message
+          : 'We couldn’t send that message. Check your connection and try again.'
+      setSendError(detail)
       setText(draft)
     } finally {
       setIsSending(false)
@@ -59,7 +69,7 @@ export default function MessageInput({ onSend, disabled = false }) {
           rows={1}
           value={text}
           disabled={disabled || isSending}
-          placeholder="Write a message"
+          placeholder={placeholder}
           aria-invalid={Boolean(hint)}
           aria-describedby={describedBy}
           onChange={(event) => {
@@ -73,7 +83,7 @@ export default function MessageInput({ onSend, disabled = false }) {
           className="btn btn--primary btn--icon chat-composer__send"
           disabled={!canSend}
           aria-busy={isSending || undefined}
-          aria-label="Send message"
+          aria-label={isSending ? 'Sending message' : 'Send message'}
           onClick={() => void submit()}
         >
           {isSending ? (

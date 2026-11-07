@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { mapAuthError } from '../utils/authErrors'
-import { hasErrors, validateRegister } from '../utils/authValidation'
+import { hasErrors, MIN_PASSWORD_LENGTH, validateRegister } from '../utils/authValidation'
 import './AuthForm.css'
 
 export default function Register({ onGoToLogin }) {
@@ -57,138 +57,161 @@ export default function Register({ onGoToLogin }) {
     }
   }
 
+  const displayNameHintId = 'register-displayName-hint'
+  const passwordHintId = 'register-password-hint'
+
   return (
     <div className="auth-shell">
-      <div className="auth-panel">
-        <p className="auth-brand">Convo</p>
-        <h1 className="auth-title">Register</h1>
-        <p className="auth-subtitle">Create your profile to start messaging.</p>
-
-        <form className="auth-form" onSubmit={handleSubmit} noValidate>
-          {formError ? (
-            <p className="auth-form-error" role="alert">
-              {formError}
-            </p>
-          ) : null}
-
-          <label className="field">
-            <span className="field__label">Display name</span>
-            <input
-              className="field__control"
-              type="text"
-              name="displayName"
-              autoComplete="nickname"
-              value={displayName}
-              onChange={(e) => handleChange('displayName', e.target.value, setDisplayName)}
-              disabled={isSubmitting}
-              aria-invalid={Boolean(fieldErrors.displayName)}
-              aria-describedby={
-                fieldErrors.displayName ? 'register-displayName-error' : undefined
-              }
-            />
-            {fieldErrors.displayName ? (
-              <span id="register-displayName-error" className="field__error">
-                {fieldErrors.displayName}
-              </span>
-            ) : null}
-          </label>
-
-          <label className="field">
-            <span className="field__label">Email</span>
-            <input
-              className="field__control"
-              type="email"
-              name="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => handleChange('email', e.target.value, setEmail)}
-              disabled={isSubmitting}
-              aria-invalid={Boolean(fieldErrors.email)}
-              aria-describedby={fieldErrors.email ? 'register-email-error' : undefined}
-            />
-            {fieldErrors.email ? (
-              <span id="register-email-error" className="field__error">
-                {fieldErrors.email}
-              </span>
-            ) : null}
-          </label>
-
-          <label className="field">
-            <span className="field__label">Password</span>
-            <input
-              className="field__control"
-              type="password"
-              name="password"
-              autoComplete="new-password"
-              value={password}
-              onChange={(e) => handleChange('password', e.target.value, setPassword)}
-              disabled={isSubmitting}
-              aria-invalid={Boolean(fieldErrors.password)}
-              aria-describedby={
-                fieldErrors.password ? 'register-password-error' : undefined
-              }
-            />
-            {fieldErrors.password ? (
-              <span id="register-password-error" className="field__error">
-                {fieldErrors.password}
-              </span>
-            ) : null}
-          </label>
-
-          <label className="field">
-            <span className="field__label">Confirm password</span>
-            <input
-              className="field__control"
-              type="password"
-              name="confirmPassword"
-              autoComplete="new-password"
-              value={confirmPassword}
-              onChange={(e) =>
-                handleChange('confirmPassword', e.target.value, setConfirmPassword)
-              }
-              disabled={isSubmitting}
-              aria-invalid={Boolean(fieldErrors.confirmPassword)}
-              aria-describedby={
-                fieldErrors.confirmPassword
-                  ? 'register-confirmPassword-error'
-                  : undefined
-              }
-            />
-            {fieldErrors.confirmPassword ? (
-              <span id="register-confirmPassword-error" className="field__error">
-                {fieldErrors.confirmPassword}
-              </span>
-            ) : null}
-          </label>
-
-          <button
-            className="btn btn--primary auth-submit"
-            type="submit"
-            disabled={isSubmitting}
-            aria-busy={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <span className="btn__spinner" aria-hidden="true" />
-                Creating account…
-              </>
-            ) : (
-              'Create account'
-            )}
-          </button>
-        </form>
-
-        <p className="auth-switch">
-          Already registered?{' '}
-          <button
-            type="button"
-            className="auth-link"
-            onClick={onGoToLogin}
-            disabled={isSubmitting}
-          >
-            Login
-          </button>
+      <aside className="auth-signal">
+        <p className="auth-signal__brand">Convo</p>
+        <p className="auth-signal__line">
+          Pick a name classmates will recognize in Students.
         </p>
+      </aside>
+
+      <div className="auth-panel">
+        <div className="auth-panel__inner">
+          <h1 className="auth-title">Register</h1>
+          <p className="auth-subtitle">
+            Add a display name, email, and password to join class chat.
+          </p>
+
+          <form className="auth-form" onSubmit={handleSubmit} noValidate>
+            {formError ? (
+              <p className="auth-form-error" role="alert">
+                {formError}
+              </p>
+            ) : null}
+
+            <label className="field">
+              <span className="field__label">Display name</span>
+              <input
+                className="field__control"
+                type="text"
+                name="displayName"
+                autoComplete="nickname"
+                value={displayName}
+                onChange={(e) => handleChange('displayName', e.target.value, setDisplayName)}
+                disabled={isSubmitting}
+                aria-invalid={Boolean(fieldErrors.displayName)}
+                aria-describedby={
+                  fieldErrors.displayName
+                    ? 'register-displayName-error'
+                    : displayNameHintId
+                }
+              />
+              {fieldErrors.displayName ? (
+                <span id="register-displayName-error" className="field__error">
+                  {fieldErrors.displayName}
+                </span>
+              ) : (
+                <span id={displayNameHintId} className="field__hint">
+                  This is how you appear in chat and Students.
+                </span>
+              )}
+            </label>
+
+            <label className="field">
+              <span className="field__label">Email</span>
+              <input
+                className="field__control"
+                type="email"
+                name="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => handleChange('email', e.target.value, setEmail)}
+                disabled={isSubmitting}
+                aria-invalid={Boolean(fieldErrors.email)}
+                aria-describedby={fieldErrors.email ? 'register-email-error' : undefined}
+              />
+              {fieldErrors.email ? (
+                <span id="register-email-error" className="field__error">
+                  {fieldErrors.email}
+                </span>
+              ) : null}
+            </label>
+
+            <label className="field">
+              <span className="field__label">Password</span>
+              <input
+                className="field__control"
+                type="password"
+                name="password"
+                autoComplete="new-password"
+                value={password}
+                onChange={(e) => handleChange('password', e.target.value, setPassword)}
+                disabled={isSubmitting}
+                aria-invalid={Boolean(fieldErrors.password)}
+                aria-describedby={
+                  fieldErrors.password ? 'register-password-error' : passwordHintId
+                }
+              />
+              {fieldErrors.password ? (
+                <span id="register-password-error" className="field__error">
+                  {fieldErrors.password}
+                </span>
+              ) : (
+                <span id={passwordHintId} className="field__hint">
+                  At least {MIN_PASSWORD_LENGTH} characters.
+                </span>
+              )}
+            </label>
+
+            <label className="field">
+              <span className="field__label">Confirm password</span>
+              <input
+                className="field__control"
+                type="password"
+                name="confirmPassword"
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) =>
+                  handleChange('confirmPassword', e.target.value, setConfirmPassword)
+                }
+                disabled={isSubmitting}
+                aria-invalid={Boolean(fieldErrors.confirmPassword)}
+                aria-describedby={
+                  fieldErrors.confirmPassword
+                    ? 'register-confirmPassword-error'
+                    : undefined
+                }
+              />
+              {fieldErrors.confirmPassword ? (
+                <span id="register-confirmPassword-error" className="field__error">
+                  {fieldErrors.confirmPassword}
+                </span>
+              ) : null}
+            </label>
+
+            <button
+              className="btn btn--primary auth-submit"
+              type="submit"
+              disabled={isSubmitting}
+              aria-busy={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="btn__spinner" aria-hidden="true" />
+                  Registering…
+                </>
+              ) : (
+                'Register'
+              )}
+            </button>
+          </form>
+
+          <p className="auth-switch">
+            Already registered?{' '}
+            <button
+              type="button"
+              className="auth-link"
+              onClick={onGoToLogin}
+              disabled={isSubmitting}
+            >
+              Sign in
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   )

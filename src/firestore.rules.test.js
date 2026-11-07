@@ -76,6 +76,50 @@ describe('Firestore security rules', () => {
     )
   })
 
+  it('allows the owner to update displayName while preserving other fields', async () => {
+    const createdAt = new Date('2026-01-01T00:00:00.000Z')
+    await testEnvironment.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), 'users', 'user-a'), {
+        displayName: 'Student A',
+        email: 'student-a@example.test',
+        photoURL: null,
+        createdAt,
+      })
+    })
+
+    const firestore = testEnvironment.authenticatedContext('user-a').firestore()
+    await assertSucceeds(
+      updateDoc(doc(firestore, 'users', 'user-a'), {
+        displayName: 'Student A Updated',
+        email: 'student-a@example.test',
+        photoURL: null,
+        createdAt,
+      }),
+    )
+  })
+
+  it('rejects profile updates by non-owners', async () => {
+    const createdAt = new Date('2026-01-01T00:00:00.000Z')
+    await testEnvironment.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), 'users', 'user-a'), {
+        displayName: 'Student A',
+        email: 'student-a@example.test',
+        photoURL: null,
+        createdAt,
+      })
+    })
+
+    const firestore = testEnvironment.authenticatedContext('user-b').firestore()
+    await assertFails(
+      updateDoc(doc(firestore, 'users', 'user-a'), {
+        displayName: 'Hijacked Name',
+        email: 'student-a@example.test',
+        photoURL: null,
+        createdAt,
+      }),
+    )
+  })
+
   it('reject unauthenticated profile, conversation, and message reads', async () => {
     const firestore = testEnvironment.unauthenticatedContext().firestore()
     await seedConversation()

@@ -21,7 +21,7 @@ export function canSendMessage(text) {
 export function getComposerHint(text) {
   if (typeof text !== 'string') return null
   if (text.trim().length > MAX_MESSAGE_LENGTH) {
-    return `Messages can be at most ${MAX_MESSAGE_LENGTH} characters`
+    return `Shorten your message to ${MAX_MESSAGE_LENGTH} characters or fewer`
   }
   return null
 }

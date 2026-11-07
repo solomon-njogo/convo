@@ -85,17 +85,17 @@
         },
         "cloud": {
           "$type": "color",
-          "$value": "#F8F7FA",
-          "$description": "App background, input fill, and secondary control background."
+          "$value": "#F3F6FB",
+          "$description": "App background, input fill, and secondary control background — cool paper tint."
         },
         "line": {
           "$type": "color",
-          "$value": "#E6E3E9",
+          "$value": "#DDE3EE",
           "$description": "Borders and separators."
         },
         "disabled": {
           "$type": "color",
-          "$value": "#EDEAF0",
+          "$value": "#E8ECF3",
           "$description": "Disabled control fill."
         },
         "disabledText": {
@@ -156,6 +156,11 @@
         "sans": {
           "$type": "fontFamily",
           "$value": "Plus Jakarta Sans, sans-serif"
+        },
+        "display": {
+          "$type": "fontFamily",
+          "$value": "Bricolage Grotesque, Plus Jakarta Sans, sans-serif",
+          "$description": "Brand mark, auth titles, and conversation headers."
         }
       },
       "fontWeight": {
@@ -653,6 +658,7 @@
       "--color-feedback-danger-subtle": "{color.feedback.dangerSubtle}",
       "--color-focus-ring": "{color.focus.ring}",
       "--font-sans": "{typography.fontFamily.sans}",
+      "--font-display": "{typography.fontFamily.display}",
       "--font-size-caption": "{typography.fontSize.caption}",
       "--font-size-label": "{typography.fontSize.label}",
       "--font-size-body-small": "{typography.fontSize.bodySmall}",

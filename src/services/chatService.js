@@ -37,6 +37,16 @@ export async function getAllUsers(currentUserId) {
     .filter((user) => user.id !== currentUserId)
 }
 
+export async function getUserById(userId) {
+  if (!userId) {
+    throw new Error('The user ID is required.')
+  }
+
+  const snapshot = await getDoc(doc(db, 'users', userId))
+  if (!snapshot.exists()) return null
+  return mapUserDocument(snapshot)
+}
+
 export function subscribeToUsers(currentUserId, callback, onError) {
   if (!currentUserId) {
     throw new Error('The current user ID is required.')
@@ -47,6 +57,16 @@ export function subscribeToUsers(currentUserId, callback, onError) {
       .map(mapUserDocument)
       .filter((user) => user.id !== currentUserId)
     callback(users)
+  }, onError)
+}
+
+export function subscribeToUser(userId, callback, onError) {
+  if (!userId) {
+    throw new Error('The user ID is required.')
+  }
+
+  return onSnapshot(doc(db, 'users', userId), (snapshot) => {
+    callback(snapshot.exists() ? mapUserDocument(snapshot) : null)
   }, onError)
 }
 
