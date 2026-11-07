@@ -222,12 +222,7 @@ export default function Profile({ userId, onBack }) {
 
             {isOwnProfile ? (
               <OwnProfileForm key={userId} profile={profile} />
-            ) : (
-              <p className="profile-readonly-note">
-                You’re viewing {profile.displayName}&apos;s profile. Only they can
-                edit their display name.
-              </p>
-            )}
+            ) : null}
           </>
         ) : null}
       </div>

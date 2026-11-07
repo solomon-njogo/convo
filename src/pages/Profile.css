@@ -131,14 +131,6 @@
   line-height: var(--line-height-body);
 }
 
-.profile-readonly-note {
-  margin: 0;
-  color: var(--color-neutral-ink-soft);
-  font-size: var(--font-size-body-small);
-  line-height: var(--line-height-body);
-  max-width: 36ch;
-}
-
 @media (max-width: 480px) {
   .profile-panel {
     width: 100%;
