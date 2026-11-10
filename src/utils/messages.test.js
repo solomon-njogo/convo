@@ -34,7 +34,7 @@ describe('getComposerHint', () => {
 
   it('explains when the draft exceeds max length', () => {
     expect(getComposerHint('a'.repeat(MAX_MESSAGE_LENGTH + 1))).toBe(
-      `Messages can be at most ${MAX_MESSAGE_LENGTH} characters`,
+      `Shorten your message to ${MAX_MESSAGE_LENGTH} characters or fewer`,
     )
   })
 })

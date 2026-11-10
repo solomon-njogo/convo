@@ -9,11 +9,15 @@ The Firestore document at `users/{userId}` holding `displayName`, `email`, `phot
 _Avoid_: Account, client, badge, currentUser
 
 **Display name**:
-The human-readable name stored on the User profile and collected only during Register.
+The human-readable name stored on the User profile. Collected during Register and editable later on the owner's Profile.
 _Avoid_: Username, handle, nickname (unless we later add a separate handle)
 
+**Profile**:
+The signed-in view of a User profile — own or a Peer's. Own Profile can edit Display name; peer Profiles are view-only.
+_Avoid_: Account settings, user page, me screen
+
 **Signed-in identity**:
-Who the Navbar presents as present in this session — Display name when available, otherwise email.
+Who the Navbar presents as present in this session — Display name when available, otherwise email. Activating it opens the owner's Profile.
 _Avoid_: User badge, account chip, client, currentUser
 
 **Peer**:

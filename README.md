@@ -46,8 +46,18 @@ npm ci
    Copy-Item .env.example .env
    ```
 
-6. Publish the repository's `firestore.rules` to the project before testing
-   Firestore reads or writes.
+6. Make sure `VITE_FIREBASE_PROJECT_ID` in `.env` identifies the same Firebase
+   project where the rules will be deployed.
+7. Sign in to Firebase CLI and deploy the repository's rules once:
+
+   ```bash
+   npx firebase-tools login
+   npx firebase-tools deploy --only firestore:rules --project YOUR_FIREBASE_PROJECT_ID
+   ```
+
+   Pushing code does not deploy Firestore rules. If a profile write is denied
+   after registration, the Auth account remains signed in. Once the rules are
+   deployed, sign out and back in; login will recreate the missing profile.
 
 Do not commit `.env`. Firebase web config is not a security boundary—protect access with Authentication and Security Rules. Never put service-account keys in the frontend.
 
@@ -66,15 +76,18 @@ project ID and does not require the shared project's credentials.
 The Firebase integration expects these exports and shapes:
 
 - `useAuth()` exposes `user`, `currentUser`, `loading`, `error`, `login`,
-  `register`, and `signOut`. `user` is the Firebase Auth user.
+  `register`, `updateDisplayName`, and `signOut`. `user` is the Firebase Auth user.
 - `registerUser({ email, password, displayName })` creates the Auth account and
   corresponding `users/{uid}` profile.
 - `loginUser({ email, password })` resolves to a Firebase `UserCredential`.
   If a previous interrupted registration left the Auth account without its
   Firestore profile, signing in recreates the profile once Firestore rules
   permit it.
+- `updateDisplayName(displayName)` syncs Auth and the owner's Firestore profile.
+  Navbar opens your Profile; the chat header opens a peer's Profile (view-only).
 - `getAllUsers(currentUserId)` returns user profiles excluding the caller;
-  `subscribeToUsers` is the real-time variant.
+  `subscribeToUsers` is the real-time variant. `getUserById` / `subscribeToUser`
+  load a single profile (including self).
 - `usePeers()` exposes `{ peers, status, error, retry }`; each peer has `id`,
   `displayName`, `email`, and `photoURL`.
 - `getConversationId(uid1, uid2)` uses sorted UIDs joined by `_`;
@@ -94,7 +107,7 @@ The Firebase integration expects these exports and shapes:
 ```
 src/
   components/     # Navbar, UserList, UserSearch, ChatWindow, MessageList, MessageInput
-  pages/          # Login, Register, Chat
+  pages/          # Login, Register, Chat, Profile
   context/        # AuthContext, AuthProvider
   hooks/          # useMessages
   services/       # authService, chatService

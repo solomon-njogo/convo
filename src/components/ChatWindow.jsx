@@ -11,12 +11,20 @@ export default function ChatWindow({
   currentUserId,
   onSend,
   stickToLatestToken,
+  onOpenPeerProfile,
 }) {
   return (
     <div className="chat-window">
       <header className="chat-window__header">
-        <PeerAvatar peer={peer} />
-        <h2 className="chat-window__name">{peer.displayName}</h2>
+        <button
+          type="button"
+          className="chat-window__profile"
+          onClick={() => onOpenPeerProfile?.(peer.id)}
+          aria-label={`View ${peer.displayName}'s profile`}
+        >
+          <PeerAvatar peer={peer} />
+          <h2 className="chat-window__name">{peer.displayName}</h2>
+        </button>
       </header>
 
       <div className="chat-window__messages">
@@ -32,7 +40,11 @@ export default function ChatWindow({
       </div>
 
       <div className="chat-window__composer">
-        <MessageInput key={`composer-${peer.id}`} onSend={onSend} />
+        <MessageInput
+          key={`composer-${peer.id}`}
+          onSend={onSend}
+          peerDisplayName={peer.displayName}
+        />
       </div>
     </div>
   )

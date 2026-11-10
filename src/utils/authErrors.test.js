@@ -7,7 +7,8 @@ describe('mapAuthError', () => {
       cause: { code: 'permission-denied' },
     })
 
-    expect(mapAuthError(error)).toContain('Publish firestore.rules')
+    expect(mapAuthError(error)).toContain('deploy firestore.rules')
+    expect(mapAuthError(error)).toContain('remain signed in')
   })
 
   it('finds Firebase errors wrapped in an AggregateError', () => {
@@ -16,12 +17,24 @@ describe('mapAuthError', () => {
       'Registration cleanup failed',
     )
 
-    expect(mapAuthError(error)).toContain('Publish firestore.rules')
+    expect(mapAuthError(error)).toContain('deploy firestore.rules')
   })
 
   it('keeps invalid credentials distinct from Firestore failures', () => {
     expect(mapAuthError({ code: 'auth/invalid-credential' })).toBe(
-      'Incorrect email or password',
+      'That email or password doesn’t match. Check both and try again.',
+    )
+  })
+
+  it('points duplicate emails toward sign-in', () => {
+    expect(mapAuthError({ code: 'auth/email-already-in-use' })).toContain(
+      'Sign in',
+    )
+  })
+
+  it('gives a recoverable next step for unknown failures', () => {
+    expect(mapAuthError({ code: 'auth/network-request-failed' })).toContain(
+      'try again',
     )
   })
 })

@@ -5,18 +5,33 @@
   gap: var(--spacing-4);
   min-height: var(--size-nav-height);
   padding: var(--spacing-2) clamp(var(--spacing-4), 3vw, var(--spacing-6));
-  background: var(--color-neutral-surface);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-brand-subtle) 55%, var(--color-neutral-surface)),
+      var(--color-neutral-surface) 70%
+    );
   border-bottom: 1px solid var(--color-neutral-line);
 }
 
 .app-navbar-brand {
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: var(--font-size-title-small);
-  font-weight: var(--font-weight-bold);
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 3vw, 1.6rem);
+  font-weight: var(--font-weight-extra-bold);
   letter-spacing: var(--letter-spacing-heading);
-  line-height: var(--line-height-heading);
+  line-height: var(--line-height-tight);
   color: var(--color-neutral-ink);
+  cursor: pointer;
+  min-height: var(--size-touch-target-minimum);
+}
+
+.app-navbar-brand:hover,
+.app-navbar-brand:focus-visible {
+  color: var(--color-brand-primary);
 }
 
 .app-navbar-end {
@@ -27,18 +42,45 @@
 }
 
 .app-navbar-identity {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
   max-width: min(42vw, 14rem);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  margin: 0;
+  padding: var(--spacing-1) var(--spacing-3) var(--spacing-1) var(--spacing-1);
+  border: 1px solid var(--color-neutral-line);
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-surface);
+  font: inherit;
   font-size: var(--font-size-body-small);
   font-weight: var(--font-weight-medium);
   color: var(--color-neutral-ink-soft);
+  cursor: pointer;
+  min-height: var(--size-touch-target-minimum);
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-easing-standard),
+    background-color var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+.app-navbar-identity:hover,
+.app-navbar-identity:focus-visible {
+  border-color: color-mix(in srgb, var(--color-brand-primary) 35%, var(--color-neutral-line));
+  background: var(--color-brand-subtle);
+  color: var(--color-neutral-ink);
+}
+
+.app-navbar-identity__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-inline-end: var(--spacing-1);
 }
 
 .app-navbar-signout {
   flex-shrink: 0;
   min-height: var(--size-touch-target-minimum);
+  border-radius: var(--radius-full);
 }
 
 @media (max-width: 480px) {

@@ -17,9 +17,9 @@
   --color-neutral-ink-soft: #5f5b68;
   --color-neutral-ink-muted: #8a8692;
   --color-neutral-surface: #ffffff;
-  --color-neutral-cloud: #f8f7fa;
-  --color-neutral-line: #e6e3e9;
-  --color-neutral-disabled: #edeaf0;
+  --color-neutral-cloud: #f3f6fb;
+  --color-neutral-line: #dde3ee;
+  --color-neutral-disabled: #e8ecf3;
   --color-neutral-disabled-text: #a8a4b0;
 
   /* Color — accent */
@@ -36,8 +36,9 @@
 
   /* Typography */
   --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
   --font-size-caption: 0.75rem;
-  --font-size-label: 0.75rem;
+  --font-size-label: 0.8125rem;
   --font-size-body-small: 0.875rem;
   --font-size-body: 1rem;
   --font-size-title-small: 1.25rem;
@@ -48,12 +49,12 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --font-weight-extra-bold: 800;
-  --line-height-tight: 1.15;
-  --line-height-heading: 1.3;
-  --line-height-body: 1.6;
+  --line-height-tight: 1.05;
+  --line-height-heading: 1.25;
+  --line-height-body: 1.55;
   --line-height-relaxed: 1.75;
-  --letter-spacing-display: -0.05em;
-  --letter-spacing-heading: -0.03em;
+  --letter-spacing-display: -0.04em;
+  --letter-spacing-heading: -0.025em;
   --letter-spacing-normal: 0em;
 
   /* Spacing */

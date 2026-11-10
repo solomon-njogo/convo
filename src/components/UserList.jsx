@@ -9,7 +9,8 @@ export default function UserList({
   onRetry,
   searchQuery,
 }) {
-  const hasQuery = searchQuery.trim().length > 0
+  const trimmedQuery = searchQuery.trim()
+  const hasQuery = trimmedQuery.length > 0
 
   if (status === 'loading') {
     return (
@@ -20,9 +21,17 @@ export default function UserList({
   }
 
   if (status === 'error') {
+    const detail =
+      typeof error?.message === 'string' &&
+      error.message.trim() &&
+      !/permission|firestore|firebase/i.test(error.message)
+        ? error.message
+        : 'Check your connection and try again.'
+
     return (
       <div className="peer-directory-status peer-directory-status--error" role="alert">
-        <p>{error?.message ?? 'Could not load students.'}</p>
+        <p className="empty-state__title">Couldn’t load students</p>
+        <p>{detail}</p>
         <button type="button" className="btn btn--secondary" onClick={onRetry}>
           Try again
         </button>
@@ -34,9 +43,19 @@ export default function UserList({
     return (
       <div className="peer-directory-status" role="status">
         {hasQuery ? (
-          <p>No users found</p>
+          <>
+            <p className="empty-state__title">No matches</p>
+            <p>
+              No students match “{trimmedQuery}”. Try a different name or email.
+            </p>
+          </>
         ) : (
-          <p>No other students yet. Ask a classmate to Register.</p>
+          <>
+            <p className="empty-state__title">No classmates yet</p>
+            <p>
+              When classmates register, they’ll show up here so you can message them.
+            </p>
+          </>
         )}
       </div>
     )
